@@ -20,13 +20,21 @@ export const userSignup = async (req, res, next) => {
 
         const hashedPassword = bcrypt.hashSync(password, 10);
 
+     
+
         const userData = new User({ name, email, password: hashedPassword, phone,dob,shippingaddress,billingaddress, profilepic,created_at });
         await userData.save();
 
         const token = generateToken(userData._id);
         res.cookie("token", token);
 
-        return res.json({ data: userData, message: "user account created" });
+     //Exclude password from the response
+      //const userResponse = userData.toObject(); 
+      //delete userData.password; 
+      ///return res.json({ data: userResponse, message: "user account created" });
+
+      return res.json({ data: userData, message: "user account created" });
+
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
@@ -52,7 +60,7 @@ export const userLogin = async (req, res, next) => {
             return res.status(401).json({ message: "user not authenticated" });
         }
 
-        const token = generateToken(userData._id,'usee');
+        const token = generateToken(userData._id,'user');
         res.cookie("token", token);
 
         return res.json({ data: userData, message: "user login success" });

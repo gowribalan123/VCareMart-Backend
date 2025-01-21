@@ -27,13 +27,13 @@ export const userSignup = async (req, res, next) => {
 
         const token = generateToken(userData._id);
         res.cookie("token", token);
-
-     //Exclude password from the response
-      //const userResponse = userData.toObject(); 
-      //delete userData.password; 
-      ///return res.json({ data: userResponse, message: "user account created" });
-
-      return res.json({ data: userData, message: "user account created" });
+// Exclude password from the response 
+ const userResponse = userData.toObject();
+  delete userResponse.password;
+    
+      return res.json({ data: userResponse, message: "user account created" });
+       
+     // return res.json({ data: userData, message: "user account created" });
 
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
@@ -79,6 +79,118 @@ export const userProfile = async (req, res, next) => {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
+export const userforgotPassword = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        const userData = await User.findOne({ email });
+
+        if (!userData) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Generate a reset token and send it via email (implementation not shown)
+        const resetToken = generateToken(user._id);
+        // Send resetToken via email to the user (implementation not shown)
+
+        return res.json({ message: "Password reset link sent to your email" });
+    } catch (error) {
+        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+    }
+};
+
+export const userchangePassword = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const { oldPassword, newPassword } = req.body;
+
+        const userData = await User.findById(userId);
+
+        if (!userData) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const passwordMatch = bcrypt.compareSync(oldPassword, user.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ message: "Old password is incorrect" });
+        }
+
+        userData.password = bcrypt.hashSync(newPassword, 10);
+        await userData.save();
+
+        return res.json({ message: "Password changed successfully" });
+    } catch (error) {
+        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+    }
+};
+
+export const userAccountDeActivate = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+
+        const userData = await User.findById(userId).select("-password");
+        if (!userData) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        userData.isActive=false
+        await userData.save();
+        return res.json({ data: userData, message: "User account deactivated successfully" });
+    } catch (error) {
+        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+    }
+};
+
+export const checkUser = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        const userData = await User.findOne({ email });
+
+        if (!userData) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.json({ message: "User exists" });
+    } catch (error) {
+        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+    }
+};
+
+export const updateUserProfile = async (req, res, next) => {
+    try {
+        const userId = req.user.id;// Get user ID from URL parameter
+        const { name, email, phone, dob, shippingaddress, billingaddress, profilepic } = req.body;
+
+        const userData = await User.findById(userId);
+
+        if (!userData) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        userData.name = name || userData.name;
+        userData.email = email || userData.email;
+        userData.phone = phone || userData.phone;
+        userData.dob = dob || userData.dob;
+        userData.shippingaddress = shippingaddress || userData.shippingaddress;
+        userData.billingaddress = billingaddress || userData.billingaddress;
+        userData.profilepic = profilepic || userData.profilepic;
+
+        const updatedUser = await userData.save();
+         
+
+        // Exclude password from the response
+        const userResponse = updatedUser.toObject();
+        delete userResponse.password;
+
+
+        return res.json({ data: userResponse, message: "User profile updated successfully" });
+    } catch (error) {
+        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+    }
+};
+
 
 export const userLogout = async (req, res, next) => {
     try {

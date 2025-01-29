@@ -1,6 +1,9 @@
 
 import jwt from "jsonwebtoken";
 
+
+
+
 export const sellerAuth = (req, res, next) => {
     try {
         const { token } = req.cookies;
@@ -19,7 +22,7 @@ export const sellerAuth = (req, res, next) => {
             return res.status(401).json({ message: "seller not autherised", success: false });
         }
 
-        req.user = tokenVerified;
+        req.seller = tokenVerified;
 
         next();
     } catch (error) {

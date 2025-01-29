@@ -1,5 +1,6 @@
 import mongoose , {Schema} from "mongoose";
 
+
 const sellerSchema = new Schema({
     name: {
         type: String,
@@ -22,7 +23,7 @@ const sellerSchema = new Schema({
         type: String,
         required: true,
     },
-    profiePic: {
+    profilepic: {
         type: String,
         default: "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg",
     },
@@ -43,6 +44,10 @@ const sellerSchema = new Schema({
       billingaddress:{
         type:String,
         required:true,  
+      },
+      noofproducts:{
+        type:Number,
+        required:true,
       },
     isActive: {
         type: Boolean,

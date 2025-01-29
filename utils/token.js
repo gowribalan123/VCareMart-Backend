@@ -7,5 +7,6 @@ export const generateToken = (id,role)=>{
 
     }catch(error){
         console.log(error);
+        res.status(error.status || 500).json({ error: error.message || "Internal server Error" });
     }
 };

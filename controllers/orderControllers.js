@@ -1,41 +1,54 @@
-// import { sendSuccess, sendError } from '../utils/apiUtils'; // Uncomment when available
+ 
 import { Cart } from "../models/cartModel.js";  
-import { Order } from "../models/orderModel.js";  
+import { Order } from "../models/orderModel.js"; 
+//import { Product } from "../models/productModel.js";  
+import { sendError, sendSuccess } from '../utils/responseHandlers.js'; 
 import mongoose from 'mongoose';
+
+
 
 // Create order
 const createOrder = async (req, res) => {
     try {
-        const { user_id, guest_id, shippingAddress, totalPrice } = req.body;
+        const { userId, shippingAddress } = req.body;
 
-        // Ensure either user_id or guest_id is provided
-        if (!user_id && !guest_id) {
-            return sendError(res, 400, "Either user_id (for logged-in users) or guest_id (for guest users) is required.");
+        console.log(userId, shippingAddress);
+
+        // Ensure userId and shippingAddress are provided
+        if (!userId) {
+            return sendError(res, 400, "userId (for logged-in users) is required.");
+        }
+        if (!shippingAddress) {
+            return sendError(res, 400, "Shipping address is required.");
         }
 
-        // Determine the final user identifier (either logged-in user or guest)
-        const finalUserId = user_id || guest_id;
+        // Fetch the cart based on userId and populate product details
+        const cart = await Cart.findOne({ userId }) 
 
-        // Fetch the cart based on user_id or guest_id
-        const cartQuery = user_id ? { user_id } : { guest_id };
-        const cart = await Cart.findOne(cartQuery).populate('items.product_id');
-
+        // Check if cart exists
         if (!cart) {
             return sendError(res, 404, "Cart not found.");
         }
 
-        // Prepare the items for the order
-        const orderItems = cart.items.map(item => ({
-            product_id: item.product_id._id,
+        // Check if products exist in the cart
+        if (!cart.products || cart.products.length === 0) {
+            return sendError(res, 400, "Cart is empty. Cannot create an order.");
+        }
+
+        // Prepare the items for the order and calculate total price
+        const orderItems = cart.products.map(item => ({
+            productId: item.productId._id,
             quantity: item.quantity,
-            price_at_purchase: item.product_id.price // Store the price at the time of purchase
+            price_at_purchase: item.productId.price
         }));
+        console.log(orderItems)
+        const totalPrice = orderItems.reduce((total, item) => total + (item.price_at_purchase * item.quantity), 0);
 
         // Create the order
-        const newOrder = new Order({ // Changed Orders to Order
-            user_id: finalUserId, 
+        const newOrder = new Order({
+            userId,
             shippingAddress,
-            totalPrice,
+           
             items: orderItems,
         });
 
@@ -43,13 +56,76 @@ const createOrder = async (req, res) => {
         await newOrder.save();
 
         // Clear the cart after successful order creation
-        cart.items = [];
-        cart.total_price = 0;
+        cart.products = [];
+        cart.totalPrice = 0; // Ensure this field is defined in your Cart schema
         await cart.save();
 
         // Send success response with order details
         sendSuccess(res, 201, 'Order created successfully and cart cleared.', newOrder);
     } catch (error) {
+        console.error(`Error creating order: ${error.message}`);
+        sendError(res, 500, `Error creating order: ${error.message}`);
+    }
+};
+
+
+// My order
+const myOrders = async (req, res) => {
+    try {
+        const { userId, shippingAddress } = req.body;
+
+        console.log(userId, shippingAddress);
+
+        // Ensure userId and shippingAddress are provided
+        if (!userId) {
+            return sendError(res, 400, "userId (for logged-in users) is required.");
+        }
+        if (!shippingAddress) {
+            return sendError(res, 400, "Shipping address is required.");
+        }
+
+        // Fetch the cart based on userId and populate product details
+        const cart = await Cart.findOne({ userId }) 
+
+        // Check if cart exists
+        if (!cart) {
+            return sendError(res, 404, "Cart not found.");
+        }
+
+        // Check if products exist in the cart
+        if (!cart.products || cart.products.length === 0) {
+            return sendError(res, 400, "Cart is empty. Cannot create an order.");
+        }
+
+        // Prepare the items for the order and calculate total price
+        const orderItems = cart.products.map(item => ({
+            productId: item.productId._id,
+            quantity: item.quantity,
+            price_at_purchase: item.productId.price
+        }));
+        console.log(orderItems)
+        const totalPrice = orderItems.reduce((total, item) => total + (item.price_at_purchase * item.quantity), 0);
+
+        // Create the order
+        const newOrder = new Order({
+            userId,
+            shippingAddress,
+           
+            items: orderItems,
+        });
+
+        // Save the order to the database
+        await newOrder.save();
+
+        // Clear the cart after successful order creation
+        cart.products = [];
+        cart.totalPrice = 0; // Ensure this field is defined in your Cart schema
+        await cart.save();
+
+        // Send success response with order details
+        sendSuccess(res, 201, 'Order created successfully and cart cleared.', newOrder);
+    } catch (error) {
+        console.error(`Error creating order: ${error.message}`);
         sendError(res, 500, `Error creating order: ${error.message}`);
     }
 };
@@ -143,4 +219,4 @@ const deleteOrder = async (req, res) => {
     }
 };
 
-export { createOrder, getAllOrders, getOrderById, updateOrderStatus, deleteOrder }; // Use ES6 export syntax
+export { createOrder, getAllOrders, getOrderById, updateOrderStatus, deleteOrder,myOrders }; // Use ES6 export syntax

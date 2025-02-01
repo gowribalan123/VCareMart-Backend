@@ -1,9 +1,10 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import {connectDB} from "./config/db.js";
+import cors from "cors";
 import {apiRouter} from "./routes/index.js";
 
-import cors from 'cors';
+ 
 
 import dotenv from 'dotenv';
 
@@ -14,12 +15,20 @@ const app = express();
 app.use(express.json())
 app.use(cookieParser())
 
+app.use(
+  cors({
+      origin: "http://localhost:5173",
+      methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
+      credentials: true,
+  })
+);
+
 const port = 3000
 
 connectDB();
 app.use(
   cors({
-      origin: ["http://localhost:3000", "https://VCareMart-Client.vercel.app"],
+      origin: ["http://localhost:3000", "https://VCareMart-frontend.vercel.app"],
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE"],
   })

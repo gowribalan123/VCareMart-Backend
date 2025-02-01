@@ -1,12 +1,14 @@
 import e from "express";  
 
-import { createOrder, getAllOrders, getOrderById, updateOrderStatus, deleteOrder } from "./../controllers/orderControllers.js";
+import { createOrder, getAllOrders, getOrderById, updateOrderStatus, deleteOrder , myOrders} from "./../controllers/orderControllers.js";
 
 // import { createOrderItem } from "./../controllers/orderItemsControllers.js";
 const router = e.Router();
 
 
 router.post('/', createOrder);
+
+router.post('/', myOrders); 
 
 router.get('/', getAllOrders);
 

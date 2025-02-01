@@ -5,9 +5,9 @@ import { userAuth } from "../middlewares/userAuth.js";
 const router = e.Router();
 
 router.post("/add-review", userAuth, addReview);
-router.get("/get-product-reviews",getProductReviews);
-router.delete('/delete-review',userAuth,deleteReview);
-router.get('/get-avg-rating',getAverageRating);
+router.get("/get-product-reviews/:productId",getProductReviews);
+router.delete('/delete-review/:reviewId',userAuth,deleteReview);
+router.get('/get-avg-rating/:productId',getAverageRating);
 
 
 export { router as reviewRouter };

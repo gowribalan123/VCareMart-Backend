@@ -2,14 +2,14 @@ import mongoose, { Schema } from "mongoose";
 
 const cartSchema = new Schema({
     userId: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
     products: [
         {
             productId: {
-                type: Schema.Types.ObjectId,
+                type:  mongoose.Schema.Types.ObjectId,
                 ref: "Product",
                 required: true,
             },
@@ -34,6 +34,7 @@ const cartSchema = new Schema({
 });
 
 
+      
 cartSchema.methods.calculateTotalPrice = function () {
     this.totalPrice = this.products.reduce((total, product) => total + (product.price * product.quantity), 0);
 };  

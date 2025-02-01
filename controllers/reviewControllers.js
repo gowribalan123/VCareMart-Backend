@@ -1,5 +1,6 @@
 import { Product } from "../models/productModel.js";
 import { Review } from "../models/reviewModel.js";
+import mongoose from 'mongoose';
 
 export const addReview = async (req, res) => {
     try {
@@ -17,7 +18,11 @@ export const addReview = async (req, res) => {
         }
 
         // Create or update the review
-        const review = await Review.findOneAndUpdate({ userId, productId }, { rating, comment }, { new: true, upsert: true });
+        const review = await Review.findOneAndUpdate(
+            { userId, productId },
+             { rating, comment },
+              { new: true, upsert: true }
+            );
 
         // Optionally, you can update the product's average rating here
 
@@ -31,7 +36,7 @@ export const addReview = async (req, res) => {
 export const getProductReviews = async (req, res) => {
     try {
         const { productId } = req.params; // Correctly destructure productId from req.params
-
+        console.log(productId)
         // Find reviews for the specified product
         const reviews = await Review.find({ productId }).populate("userId", "name").sort({ createdAt: -1 });
 
@@ -51,11 +56,11 @@ console.log(reviews.length)
 
 export const deleteReview = async (req, res) => {
     try {
-        const { reviewId } = req.params;
+        const  {reviewId}  = req.params;
         const userId = req.user.id;
 
         const review = await Review.findOneAndDelete({ _id: reviewId, userId });
-
+console.log(reviewId,userId)
         if (!review) {
             return res.status(404).json({ message: "Review not found or not authorized" });
         }
@@ -75,10 +80,10 @@ export const getAverageRating = async (req, res) => {
         if (!reviews.length) {
             return res.status(404).json({ message: "No reviews found for this product" });
         }
-
+       console.log(reviews.length)
         const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
 
-        res.status(200).json({ data: averageRating, message: "avg reviews fetched" });
+        res.status(200).json({ data : "....",averageRating, message: "avg reviews fetched" });
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error });
     }

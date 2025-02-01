@@ -1,22 +1,44 @@
 import { Cart } from "../models/cartModel.js";  
 import { Product } from "../models/productModel.js";  
 
+ 
+
 export const getCart = async (req, res) => {  
     try {  
         const userId = req.user.id;  
-        
+
         // Fetch cart and populate product details  
-        const cart = await Cart.findOne({ userId }).populate("products.productId");  
+        const cart = await Cart.findOne({ userId })
+        
         if (!cart) {  
             return res.status(404).json({ message: "Cart not found" });  
         }  
 
-        res.status(200).json({ data: cart, message: "Cart fetched successfully" });  
+        // Log the cart structure for debugging
+        console.log("Fetched cart:", JSON.stringify(cart, null, 2));
+
+        // Calculate total price dynamically
+        const calculatedTotalPrice = cart.products.reduce((total, item) => {
+            // Check if productId is populated
+            if (item.productId) {
+                return total + (item.price * item.quantity);
+            }
+            return total; // Skip if productId is null
+        }, 0);
+
+        res.status(200).json({ 
+            data: { 
+                ...cart.toObject(), 
+                totalPrice: calculatedTotalPrice // Update totalPrice with calculated value
+            }, 
+            message: "Cart fetched successfully" 
+        });  
     } catch (error) {  
         console.error("Error fetching cart:", error);  
         res.status(500).json({ message: "Internal server error", error });  
     }  
-};  
+};
+
 export const addProductToCart = async (req, res) => {  
     try {  
         const userId = req.user.id;  

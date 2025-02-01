@@ -77,7 +77,7 @@ export const getAllProducts = async (req, res) => {
 export const getProductDetails = async (req, res) => {  
     try {
         const { productId } = req.params; // Destructure productId from request parameters
-    
+    console.log(productId)
         const productDetails = await Product.findById(productId).populate("seller"); // Fetch product and populate seller
     
         if (!productDetails) {

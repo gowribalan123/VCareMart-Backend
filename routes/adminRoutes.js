@@ -1,3 +1,3 @@
 //fetch-all-users
 //inactivate-user
-//fetch-all-mentor
+//fetch-all-seller

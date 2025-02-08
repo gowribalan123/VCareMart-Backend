@@ -36,7 +36,7 @@ router.put("/change-password", sellerAuth, sellerChangePassword);
 router.put("/account-deactivate", sellerAuth, sellerAccountDeActivate);
 
 //check-seller
-router.get("/check-seller", checkSeller);
+router.get("/check-seller",sellerAuth, checkSeller);
  
 //account-activate
  router.put("/account-activate", sellerAuth, sellerAccountActivate);

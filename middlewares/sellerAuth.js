@@ -23,6 +23,7 @@ export const sellerAuth = (req, res, next) => {
         }
 
         req.seller = tokenVerified;
+        
 
         next();
     } catch (error) {

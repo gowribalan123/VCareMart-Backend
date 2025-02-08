@@ -2,11 +2,14 @@ import { Seller } from "../models/sellerModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
 
+
+const NODE_ENV = process.env.NODE_ENV;
+
 export const sellerSignup = async (req, res, next) => {
     try {
         console.log("hitted");
 
-        const { name, email, password, phone, dob,shippingaddress,billingaddress,profilepic,noofproducts,created_at } = req.body;
+        const { name, email, password, phone, dob,shippingaddress,billingaddress,profilepic,noofproducts,role,created_at } = req.body;
 
         if (!name || !email || !password || !phone || !dob || !shippingaddress || !billingaddress|| !noofproducts) {
             return res.status(400).json({ message: "all fields are required" });
@@ -22,16 +25,20 @@ export const sellerSignup = async (req, res, next) => {
 
      
 
-        const sellerData = new Seller({ name, email, password: hashedPassword, phone,dob,shippingaddress,billingaddress, profilepic,noofproducts,created_at });
+        const sellerData = new Seller({ name, email, password: hashedPassword, phone,dob,shippingaddress,billingaddress, profilepic,noofproducts,role,created_at });
         await sellerData.save();
 
         const token = generateToken(sellerData._id);
-        res.cookie("token", token);
+       // res.cookie("token", token);
 // Exclude password from the response 
  //const sellerResponse = sellerData.toObject();
   //delete sellerResponse.password;
-    
-      return res.json({ data: sellerData, message: "seller account created" });
+  res.cookie("token", token, {
+    sameSite: NODE_ENV === "production" ? "None" : "Lax",
+    secure: NODE_ENV === "production",
+    httpOnly: NODE_ENV === "production",
+});
+      res.json({ success: true , message: "seller account created" });
        
      // return res.json({ data: sellerData, message: "seller account created" });
 
@@ -61,9 +68,13 @@ export const sellerLogin = async (req, res, next) => {
         }
 
         const token = generateToken(sellerExist._id,'seller');
-        res.cookie("token", token);
-
-        return res.json({ data: sellerExist, message: "seller login success" });
+        //res.cookie("token", token);
+        res.cookie("token", token, {
+            sameSite: NODE_ENV === "production" ? "None" : "Lax",
+            secure: NODE_ENV === "production",
+            httpOnly: NODE_ENV === "production",
+        });
+        return res.json({ success: true,  message: "seller login success" });
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
@@ -71,10 +82,11 @@ export const sellerLogin = async (req, res, next) => {
 
 export const sellerProfile = async (req, res, next) => {
     try {
-        const sellerId = req.seller.id;
+      //  const sellerId = req.seller.id;
+      const { user } =req;
 
-        const sellerData = await Seller.findById(sellerId).select("-password");
-        return res.json({ data: sellerData, message: "seller profile fetched" });
+        const userData = await Seller.findById(user.id).select("-password");
+        return res.json({ success:true , message: "user profile fetched" ,userData});
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
@@ -163,16 +175,17 @@ export const sellerAccountActivate = async (req, res, next) => {
 
 export const checkSeller = async (req, res, next) => {
     try {
-        const { email } = req.body;
+        //const { email } = req.body;
 
-        const sellerData = await Seller.findOne({ email });
+        //const sellerData = await Seller.findOne({ email });
 
-        if (!sellerData) {
-            return res.status(404).json({ message: "seller not found" });
-        }
+        //if (!sellerData) {
+          //  return res.status(404).json({ message: "seller not found" });
+        //}
 
-        return res.json({ message: "seller exists" });
+        res.json({ success : true , message: "seller authorized" });
     } catch (error) {
+        console.log(error);
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
@@ -214,10 +227,16 @@ export const updateSellerProfile = async (req, res, next) => {
 
 export const sellerLogout = async (req, res, next) => {
     try {
-        res.clearCookie("token");
+        res.clearCookie("token", {
+            sameSite: NODE_ENV === "production" ? "None" : "Lax",
+            secure: NODE_ENV === "production",
+            httpOnly: NODE_ENV === "production",
+        });
 
-        return res.json({ message: "seller logout success" });
+     res.json({ success : true , message: "user logged out" });
     } catch (error) {
+        console.log(error);
+
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };

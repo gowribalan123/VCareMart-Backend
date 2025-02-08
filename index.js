@@ -11,13 +11,13 @@ import dotenv from 'dotenv';
 dotenv.config()
 
 const app = express();
-//const express = require('express')
+ 
 app.use(express.json())
 app.use(cookieParser())
 
 app.use(
   cors({
-      origin: "http://localhost:5173",
+      origin: ["http://localhost:5173", "https://localhost:3000"],
       methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
       credentials: true,
   })
@@ -26,13 +26,7 @@ app.use(
 const port = 3000
 
 connectDB();
-app.use(
-  cors({
-      origin: ["http://localhost:3000", "https://VCareMart-frontend.vercel.app"],
-      credentials: true,
-      methods: ["GET", "POST", "PUT", "DELETE"],
-  })
-);
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -60,4 +54,14 @@ app.listen(process.env.PORT, (err) => {
 });
 
 
+//http://localhost:3000/api/courses/create-course
+
+//http://localhost:3000/api/user/signup
 //http://localhost:3000/api/user/login
+//http://localhost:3000/api/user/profile
+//http://localhost:3000/api/user/edit-profile
+
+//http://localhost:3000/api/mentor/signup
+//http://localhost:3000/api/mentor/login
+//http://localhost:3000/api/mentor/profile
+//http://localhost:3000/api/mentor/edit-profile

@@ -29,7 +29,7 @@ const productSchema = new Schema({
         ref: "agegroup",  
         required: true, // Ensure agegroup is required  
     }  ,
-    size: {  
+    color: {  
         type: String,  
         required: true,  
     },  

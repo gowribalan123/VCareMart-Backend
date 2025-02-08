@@ -2,6 +2,8 @@ import { User } from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
 
+const NODE_ENV = process.env.NODE_ENV;
+
 export const userSignup = async (req, res, next) => {
     try {
         console.log("hitted");
@@ -26,7 +28,14 @@ export const userSignup = async (req, res, next) => {
         await userData.save();
 
         const token = generateToken(userData._id);
-        res.cookie("token", token);
+       //res.cookie("token", token);
+
+       res.cookie("token", token, {
+        sameSite: NODE_ENV === "production" ? "None" : "Lax",
+        secure: NODE_ENV === "production",
+        httpOnly: NODE_ENV === "production",
+    });
+
 // Exclude password from the response 
  //const userResponse = userData.toObject();
   //delete userResponse.password;
@@ -61,9 +70,18 @@ export const userLogin = async (req, res, next) => {
         }
 
         const token = generateToken(userExist._id,'user');
-        res.cookie("token", token);
+        //res.cookie("token", token);
 
-        return res.json({ data: userExist, message: "user login success" });
+        res.cookie("token", token, {
+            sameSite: NODE_ENV === "production" ? "None" : "Lax",
+            secure: NODE_ENV === "production",
+            httpOnly: NODE_ENV === "production",
+        });  
+         // delete userExist._doc.password;
+         {
+            const { password, ...userDataWithoutPassword } = userExist._doc;
+            return res.json({ data: userDataWithoutPassword, message: "user login success" });
+        }
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
@@ -171,15 +189,16 @@ export const userAccountActivate = async (req, res, next) => {
 
 export const checkUser = async (req, res, next) => {
     try {
-        const { email } = req.body;
+        //const { email } = req.body;
 
-        const userData = await User.findOne({ email });
+        //const userData = await User.findOne({ email });
 
-        if (!userData) {
-            return res.status(404).json({ message: "User not found" });
-        }
+      //  if (!userData) {
+          //  return res.status(404).json({ message: "User not found" });
+      //  }
 
-        return res.json({ message: "User exists" });
+       // return res.json({ message: "User exists" });
+       return res.json({ message: "user autherized" });
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
@@ -217,11 +236,155 @@ export const updateUserProfile = async (req, res, next) => {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
+ 
+
+export const addToCart = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { productId, quantity } = req.body;
+
+        // Validate input
+        if (!productId || !quantity) {
+            return res.status(400).json({ message: "Product ID and quantity are required" });
+        }
+
+        const userData = await User.findById(userId);
+        if (!userData) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Check if the product is already in the cart
+        const existingItemIndex = userData.cart.findIndex(item => item.productId.toString() === productId);
+        if (existingItemIndex > -1) {
+            // Update the quantity if the product is already in the cart
+            userData.cart[existingItemIndex].quantity += quantity;
+        } else {
+            // Add new item to the cart
+            userData.cart.push({ productId, quantity });
+        }
+
+        await userData.save();
+        return res.json({ message: "Product added to cart", cart: userData.cart });
+    } catch (error) {
+        return res.status(500).json({ message: error.message || "Internal server error" });
+    }
+};
+ 
+
+export const checkOut = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Find the user and populate their cart
+        const userData = await User.findById(userId).populate('cart.productId'); // Assuming cart items reference Product model
+
+        if (!userData || !userData.cart.length) {
+            return res.status(400).json({ message: "Cart is empty" });
+        }
+
+        // Here you would typically integrate with a payment gateway
+        // For example, using Stripe:
+        // const paymentIntent = await stripe.paymentIntents.create({
+        //     amount: calculateTotal(userData.cart), // Implement calculateTotal to sum cart items
+        //     currency: 'usd', // Change as needed
+        // });
+
+        // Simulating payment processing
+        const paymentSuccess = true; // Replace with actual payment success check
+
+        if (!paymentSuccess) {
+            return res.status(500).json({ message: "Payment processing failed" });
+        }
+
+        // Create an order record (you may have an Order model)
+        const order = {
+            userId: userId,
+            items: userData.cart,
+            totalAmount: calculateTotal(userData.cart), // Implement this function
+            createdAt: new Date(),
+        };
+
+        // Save the order to the user's orders array or a separate Orders collection
+        userData.orders.push(order);
+        userData.cart = []; // Clear the cart after checkout
+        await userData.save();
+
+        return res.json({ message: "Checkout successful", order });
+    } catch (error) {
+        return res.status(500).json({ message: error.message || "Internal server error" });
+    }
+};
+
+// Helper function to calculate total amount
+const calculateTotal = (cart) => {
+    return cart.reduce((total, item) => {
+        return total + item.productId.price * item.quantity; // Assuming productId has a price field
+    }, 0);
+};
 
 
+
+
+export const viewCart = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Find the user and populate their cart with product details
+        const userData = await User.findById(userId).populate('cart.productId'); // Assuming cart items reference Product model
+
+        if (!userData) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Return the cart items
+        return res.json({ cart: userData.cart, message: "Cart retrieved successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message || "Internal server error" });
+    }
+};
+
+export const viewProducts = async (req, res) => {
+    try {
+        // Fetch all products from the database
+        const products = await Product.find();
+
+        if (!products.length) {
+            return res.status(404).json({ message: "No products available" });
+        }
+
+        // Return the list of products
+        return res.json({ products, message: "Products retrieved successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message || "Internal server error" });
+    }
+};
+
+
+export const orderHistory = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Find the user and populate their orders with product details
+        const userData = await User.findById(userId).populate('orders.items.productId'); // Assuming orders reference Product model
+
+        if (!userData || !userData.orders.length) {
+            return res.status(404).json({ message: "No order history found" });
+        }
+
+        // Return the user's order history
+        return res.json({ orders: userData.orders, message: "Order history retrieved successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message || "Internal server error" });
+    }
+};
 export const userLogout = async (req, res, next) => {
     try {
-        res.clearCookie("token");
+      //  res.clearCookie("token");
+      res.clearCookie("token", {
+        sameSite: NODE_ENV === "production" ? "None" : "Lax",
+        secure: NODE_ENV === "production",
+        httpOnly: NODE_ENV === "production",
+    });
 
         return res.json({ message: "user logout success" });
     } catch (error) {

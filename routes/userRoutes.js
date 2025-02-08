@@ -1,5 +1,5 @@
 import e from "express";
-import { userLogin, userLogout, userProfile,updateUserProfile, userSignup, userforgotPassword,userchangePassword,userAccountDeActivate,checkUser,userAccountActivate,deleteUser } from "../controllers/userControllers.js";
+import { userLogin, userLogout, userProfile,updateUserProfile, userSignup, userforgotPassword,userchangePassword,userAccountDeActivate,checkUser,userAccountActivate,deleteUser,viewProducts ,addToCart , viewCart,checkOut,orderHistory} from "../controllers/userControllers.js";
 import { userAuth } from "../middlewares/userAuth.js";
 
 const router = e.Router();
@@ -36,16 +36,21 @@ router.put("/change-password", userAuth, userchangePassword);
  router.put("/account-activate", userAuth, userAccountActivate);
 
  //check-user
-  router.get("/check-user", checkUser);
+  router.get("/check-user", userAuth,checkUser);
 
    //delete-user
-   router.delete("/delete", deleteUser);
+   router.delete("/delete",userAuth, deleteUser);
 
-   //router.get("/products", viewProducts);
-   //router.post("/cart", userAuth, addToCart);
-   //router.get("/cart", userAuth, viewCart);
-   //router.post("/checkout", userAuth, checkout);
-   //router.get("/orders", userAuth, orderHistory);
+   // view Product
+   router.get("/product",userAuth, viewProducts);
+   //add To Cart
+    router.post("/cart", userAuth, addToCart);
+    //view cart
+   router.get("/cart", userAuth, viewCart);
+   //check out
+  router.post("/checkout", userAuth, checkOut);
+   //order history
+   router.get("/myOrders", userAuth, orderHistory);
    
    
 export { router as userRouter };

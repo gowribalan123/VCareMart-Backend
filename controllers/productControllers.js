@@ -13,17 +13,20 @@ export const createProduct = async (req, res, next) => {
         }  
     // Destructure fields from the request body  
 
-        const { name, description, subcategoryid, agegroupid, size, price, stock, weight, rating,seller} = req.body;  
+        const { name, description, subcategoryid, agegroupid, color, price, stock, weight, rating,seller} = req.body;  
         console.log("image====",req.file)
-const sellerId = req.seller.id;  
+
+        
+
+ 
 //req.file=image;
 
   // const { id } = req.user;
         // Check if the required fields are present  
-        if (!name || !description || !subcategoryid || !agegroupid || !size || !price || !stock || !weight || !rating) {  
-            return res.status(400).json({ message: "All properties are required" });  
+        if (!name || !description || !subcategoryid || !agegroupid || !color || !price || !stock ||!weight || !rating) {  
+            return res.status(400).json({ message: "All fields are required" });  
         }  
-       
+       const sellerId=req.seller.id;
         console.log("Uploaded file:", req.file);  
     
         // Handle file upload to Cloudinary  
@@ -43,7 +46,7 @@ const sellerId = req.seller.id;
             description,  
             subcategoryid,  
             agegroupid,  
-            size,  
+            color,  
             price,  
             stock,  
             weight,  

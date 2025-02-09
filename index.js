@@ -17,7 +17,7 @@ app.use(cookieParser())
 
 app.use(
   cors({
-      origin: ["http://localhost:5173", "https://localhost:3000"],
+      origin: ["http://localhost:5173", "https://vcare-mart.vercel.app/"],
       methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
       credentials: true,
   })

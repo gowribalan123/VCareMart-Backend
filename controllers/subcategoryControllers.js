@@ -13,7 +13,7 @@ export const createsubCategory = async (req, res, next) => {
         }  
     // Destructure fields from the request body  
 
-        const { name, description,seller} = req.body;  
+        const { category_id ,name, description,seller} = req.body;  
         console.log("image====",req.file)
 
         
@@ -23,7 +23,7 @@ export const createsubCategory = async (req, res, next) => {
 
   // const { id } = req.user;
         // Check if the required fields are present  
-        if (!name || !description ) {  
+        if (!category_id || !name || !description ) {  
             return res.status(400).json({ message: "All fields are required" });  
         }  
        const sellerId=req.seller.id;
@@ -43,7 +43,8 @@ export const createsubCategory = async (req, res, next) => {
         // Create a new category  
         const newsubCategory = new subCategory({  
             name,  
-            description,  
+            description,
+            category_id,  
            
             
            image: uploadResult.url,  

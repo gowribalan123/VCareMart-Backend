@@ -13,7 +13,7 @@ export const createProduct = async (req, res, next) => {
         }  
     // Destructure fields from the request body  
 
-        const { name, description, subcategoryid, agegroupid, color, price, stock, weight, rating,seller} = req.body;  
+        const { name, description, subcategoryid, age_group,size, color, price, stock, weight, rating,seller} = req.body;  
         console.log("image====",req.file)
 
         
@@ -23,7 +23,7 @@ export const createProduct = async (req, res, next) => {
 
   // const { id } = req.user;
         // Check if the required fields are present  
-        if (!name || !description || !subcategoryid || !agegroupid || !color || !price || !stock ||!weight || !rating) {  
+        if (!name || !description || !subcategoryid || !age_group || !size|| !color || !price || !stock ||!weight || !rating) {  
             return res.status(400).json({ message: "All fields are required" });  
         }  
        const sellerId=req.seller.id;
@@ -45,7 +45,8 @@ export const createProduct = async (req, res, next) => {
             name,  
             description,  
             subcategoryid,  
-            agegroupid,  
+            age_group,
+            size,  
             color,  
             price,  
             stock,  

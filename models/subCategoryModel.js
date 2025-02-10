@@ -15,7 +15,11 @@ const subcategorySchema = new Schema({
         minLength: 20,  
         maxLength: 300,  
     },  
-    
+    category_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "category", // Reference to the Category model
+        required: true,
+      },
    
     image: {
         type: String,

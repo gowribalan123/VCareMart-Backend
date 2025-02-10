@@ -4,7 +4,7 @@ import {userRouter} from "./userRoutes.js";
 import {sellerRouter} from "./sellerRoutes.js";
 import {productRouter} from "./productRoutes.js";
 
-
+import {agegroupRouter} from "./agegroupRoutes.js";
 import {categoryRouter} from "./categoryRoutes.js";
 import {subcategoryRouter} from "./subcategoryRoutes.js";
 //import {productdetailsRouter} from "./productdetailsRoutes.js";
@@ -19,7 +19,7 @@ router.use("/user",userRouter);
 router.use("/seller",sellerRouter);
 router.use("/product",productRouter);
 router.use("/order",orderRouter);
-
+router.use("/agegroup",agegroupRouter);
 router.use("/category",categoryRouter);
 router.use("/subcategory",subcategoryRouter);
 //router.use("/productdetails",productdetailsRouter);

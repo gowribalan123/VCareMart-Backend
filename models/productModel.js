@@ -24,11 +24,16 @@ const productSchema = new Schema({
         required: true,  
         min: 0, // Ensure price is non-negative  
     },  
-    agegroupid: {  
-        type: mongoose.Types.ObjectId,  
-        ref: "agegroup",  
-        required: true, // Ensure agegroup is required  
-    }  ,
+    age_group:{
+        type: String,  
+        required: true,   
+         default:"<15",
+    },
+    size:{
+        type: String,  
+        required: true,   
+        default:"free size",
+    },
     color: {  
         type: String,  
         required: true,  

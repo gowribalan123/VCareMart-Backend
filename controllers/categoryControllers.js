@@ -59,7 +59,7 @@ export const createCategory = async (req, res, next) => {
     }  
 };
 
-// Get all products  
+// Get all Categories
 export const getAllCategory = async (req, res) => {  
     try {  
         const category = await Category.find();  
@@ -69,3 +69,24 @@ export const getAllCategory = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });  
     }  
 };  
+
+
+//get a single category by name
+export const getCategoryDetails = async (req, res) => {  
+    try {
+        const { name } = req.params; // Destructure category name from request parameters
+        console.log(name);
+
+        // Use the correct query to find the category by name
+        const categoryDetails = await Category.findOne({ name }, 'name image description').populate("seller"); // Fetch specific fields and populate seller
+
+        if (!categoryDetails) {
+            return res.status(404).json({ message: "Category not found" }); // Handle case where category doesn't exist
+        }
+
+        res.status(200).json({ message: "Category details fetched", data: categoryDetails });
+    } catch (error) {
+        console.error("Error fetching category details:", error); // Use console.error for error logging
+        res.status(error.status || 500).json({ error: error.message || "Internal server error" });
+    }
+};

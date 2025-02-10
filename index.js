@@ -18,7 +18,11 @@ app.use(cookieParser())
 app.use(
   cors({
       //origin: ["https://v-care-mart.vercel.app/", "https://v-care-mart-backend.vercel.app/"],
-      origin: ["http://localhost:5173", "https://v-care-mart.vercel.app/"],
+    //front end Local development      http://localhost:5173
+    //front end production domain      https://v-care-mart.vercel.app/
+    //backend production domain        https://v-care-mart-backend.vercel.app/ 
+
+      origin: ["http://localhost:5173", "https://v-care-mart-backend.vercel.app/","https://v-care-mart.vercel.app/"],
       methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
       credentials: true,
   })

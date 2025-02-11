@@ -29,7 +29,7 @@ export const createAgegroup = async (req, res, next) => {
        const sellerId=req.seller.id;
        
 
-        console.log(sellerId)
+       // console.log(sellerId)
         // Create a new agegroup 
         const newAgegroup = new Agegroup({  
            age_group,
@@ -62,7 +62,7 @@ export const getAllAgegroup = async (req, res) => {
 export const getAgegroupDetails = async (req, res) => {  
     try {
         const { age_group } = req.params; // Destructure agegroup name from request parameters
-        console.log(age_group);
+    //    console.log(age_group);
 
         // Use the correct query to find the agegroup by name
         const agegroupDetails = await Agegroup.findOne({age_group }).populate("seller"); // Fetch specific fields and populate seller

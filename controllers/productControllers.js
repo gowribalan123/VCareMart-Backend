@@ -8,13 +8,13 @@ export const createProduct = async (req, res, next) => {
         
         // Ensure user is authenticated and get seller ID  
         if (!req.seller || !req.seller.id) {  
-            console.log(req.seller);
+             
             return res.status(401).json({ message: 'User not authenticated' });  
         }  
     // Destructure fields from the request body  
 
         const { name, description, subcategoryid, age_group,size, color, price, stock, weight, rating,seller} = req.body;  
-        console.log("image====",req.file)
+       
 
         
 
@@ -27,7 +27,7 @@ export const createProduct = async (req, res, next) => {
             return res.status(400).json({ message: "All fields are required" });  
         }  
        const sellerId=req.seller.id;
-        console.log("Uploaded file:", req.file);  
+        
     
         // Handle file upload to Cloudinary  
         let uploadResult;  
@@ -39,7 +39,7 @@ export const createProduct = async (req, res, next) => {
             return res.status(400).json({ message: "File is required" });  
         }  
 
-        console.log(sellerId)
+         
         // Create a new product  
         const newProduct = new Product({  
             name,  
@@ -81,7 +81,7 @@ export const getAllProducts = async (req, res) => {
 export const getProductDetails = async (req, res) => {  
     try {
         const { productId } = req.params; // Destructure productId from request parameters
-    console.log(productId)
+    
         const productDetails = await Product.findById(productId).populate("seller"); // Fetch product and populate seller
     
         if (!productDetails) {
@@ -104,7 +104,7 @@ export const updateProduct = async (req, res) => {
     
         try {  
             const productId = req.params.productId;  
-            console.log("Product ID:", productId); // Log the product ID
+            
             const updatedData = req.body;  
     
             // Validate the product ID format

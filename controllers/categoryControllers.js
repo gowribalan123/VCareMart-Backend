@@ -27,19 +27,19 @@ export const createCategory = async (req, res, next) => {
             return res.status(400).json({ message: "All fields are required" });  
         }  
        const sellerId=req.seller.id;
-        console.log("Uploaded file:", req.file);  
+      //  console.log("Uploaded file:", req.file);  
     
         // Handle file upload to Cloudinary  
         let uploadResult;  
         if (req.file) {  
             uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);  
-            console.log("Upload result:", uploadResult);  
+        //    console.log("Upload result:", uploadResult);  
             
         } else {  
             return res.status(400).json({ message: "File is required" });  
         }  
 
-        console.log(sellerId)
+      //  console.log(sellerId)
         // Create a new category  
         const newCategory = new Category({  
             name,  

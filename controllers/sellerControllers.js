@@ -7,7 +7,7 @@ const NODE_ENV = process.env.NODE_ENV;
 
 export const sellerSignup = async (req, res, next) => {
     try {
-        console.log("hitted");
+      //  console.log("hitted");
 
         const { name, email, password, phone, dob,shippingaddress,billingaddress,profilepic,noofproducts,role,created_at } = req.body;
 

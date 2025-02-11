@@ -44,9 +44,9 @@ router.put("/change-password", userAuth, userchangePassword);
    // view Product
    router.get("/product",userAuth, viewProducts);
    //add To Cart
-    router.post("/cart", userAuth, addToCart);
+    router.post("/add-to-cart", userAuth, addToCart);
     //view cart
-   router.get("/cart", userAuth, viewCart);
+   router.get("/get-cart", userAuth, viewCart);
    //check out
   router.post("/checkout", userAuth, checkOut);
    //order history

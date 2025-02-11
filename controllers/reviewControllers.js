@@ -36,7 +36,7 @@ export const addReview = async (req, res) => {
 export const getProductReviews = async (req, res) => {
     try {
         const { productId } = req.params; // Correctly destructure productId from req.params
-        console.log(productId)
+
         // Find reviews for the specified product
         const reviews = await Review.find({ productId }).populate("userId", "name").sort({ createdAt: -1 });
 
@@ -44,7 +44,7 @@ export const getProductReviews = async (req, res) => {
         if (!reviews.length) {
             return res.status(404).json({ message: "No reviews found for this product" });
         }
-console.log(reviews.length)
+
         // Respond with the found reviews
         res.status(200).json({ data: reviews, message: "Reviews fetched successfully" });
     } catch (error) {
@@ -60,7 +60,7 @@ export const deleteReview = async (req, res) => {
         const userId = req.user.id;
 
         const review = await Review.findOneAndDelete({ _id: reviewId, userId });
-console.log(reviewId,userId)
+
         if (!review) {
             return res.status(404).json({ message: "Review not found or not authorized" });
         }
@@ -80,8 +80,7 @@ export const getAverageRating = async (req, res) => {
         if (!reviews.length) {
             return res.status(404).json({ message: "No reviews found for this product" });
         }
-       console.log(reviews.length)
-        const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+               const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
 
         res.status(200).json({ data : "....",averageRating, message: "avg reviews fetched" });
     } catch (error) {

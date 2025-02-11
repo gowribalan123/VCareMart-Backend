@@ -13,9 +13,9 @@ export const getCart = async (req, res) => {
         if (!cart) {  
             return res.status(404).json({ message: "Cart not found" });  
         }  
-
+//
         // Log the cart structure for debugging
-        console.log("Fetched cart:", JSON.stringify(cart, null, 2));
+  //      console.log("Fetched cart:", JSON.stringify(cart, null, 2));
 
         // Calculate total price dynamically
         const calculatedTotalPrice = cart.products.reduce((total, item) => {
@@ -42,15 +42,15 @@ export const getCart = async (req, res) => {
 export const addProductToCart = async (req, res) => {  
     try {  
         const userId = req.user.id;  
-        const { productId, quantity } = req.body;  
+        const { productId } = req.body;  
 
         // Validate productId  
         if (!productId) {  
             return res.status(400).json({ message: "Product ID is required" });  
         }  
-        if (!quantity || quantity < 1) {
-            return res.status(400).json({ message: "Quantity must be at least 1" });
-        }
+      ////  if (!quantity || quantity < 1) {
+          //  return res.status(400).json({ message: "Quantity must be at least 1" });
+        //}
 
         // Find the product to ensure it exists  
         const product = await Product.findById(productId);  
@@ -68,9 +68,9 @@ export const addProductToCart = async (req, res) => {
                 products: [{ 
                     productId, 
                     price: product.price, 
-                    quantity // Set quantity directly from the request
+                  //  quantity // Set quantity directly from the request
                 }],   
-                totalPrice: product.price * quantity // Initial total price
+                //totalPrice: product.price * quantity // Initial total price
             }); 
         } else {
             // Check if the product is already in the cart  
@@ -78,20 +78,20 @@ export const addProductToCart = async (req, res) => {
             
             if (productIndex !== -1) {  
                 // If product exists, update the quantity without resetting it to 1  
-                cart.products[productIndex].quantity += quantity;  // Update with the incoming quantity
+               // cart.products[productIndex].quantity += quantity;  // Update with the incoming quantity
             } else {  
                 // Add the product to the cart with the incoming quantity  
                 const cartItem = {  
                     productId,  
                     price: product.price,  
-                    quantity // Set quantity directly from the request
+                   // quantity // Set quantity directly from the request
                 };  
                 cart.products.push(cartItem);  
             }
         }
 
         // Recalculate the total price  
-        cart.totalPrice = cart.products.reduce((total, item) => total + (item.price * item.quantity), 0);  
+        //cart.totalPrice = cart.products.reduce((total, item) => total + (item.price * item.quantity), 0);  
 
         // Save the cart  
         await cart.save();  
@@ -101,7 +101,7 @@ export const addProductToCart = async (req, res) => {
             _id: cart._id,
             userId: cart.userId,
             products: cart.products,
-            totalPrice: cart.totalPrice
+           // totalPrice: cart.totalPrice
         };
 
         res.status(200).json({ data: responseCart, message: "Product added to cart" });  

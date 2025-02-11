@@ -15,12 +15,12 @@ const cartSchema = new Schema({
             },
             price: {
                 type: Number,
-                required: true,
+               // required: true,
             },
             quantity: {  
                 type: Number,  
-                default: 1, // Default to 1 if not specified  
-                min: 1 // Ensure that quantity must be at least 1  
+               // default: 1, // Default to 1 if not specified  
+                //min: 1 // Ensure that quantity must be at least 1  
             }  
            
         }

@@ -1,12 +1,13 @@
 import { User } from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
+import { Product } from "../models/productModel.js";  
 
 const NODE_ENV = process.env.NODE_ENV;
 
 export const userSignup = async (req, res, next) => {
     try {
-        console.log("hitted");
+       // console.log("hitted");
 
         const { name, email, password, phone, dob,shippingaddress,billingaddress,profilepic,created_at } = req.body;
 

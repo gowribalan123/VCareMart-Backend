@@ -44,7 +44,7 @@ app.get("test",(req,res)=>{
 app.use("/api",apiRouter);
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+ // console.log(`Example app listening on port ${port}`)
 });
 app.all("*", (req, res) => {
   return res.status(404).json({ message: "end-point does not exist" });
@@ -52,9 +52,9 @@ app.all("*", (req, res) => {
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
-      console.log(err);
+   //   console.log(err);
   } else {
-      console.log(`server starts on port ${port}`)
+     // console.log(`server starts on port ${port}`)
   }
 });
 

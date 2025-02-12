@@ -50,7 +50,7 @@ router.put("/change-password", userAuth, userchangePassword);
    //check out
   router.post("/checkout", userAuth, checkOut);
    //order history
-   router.get("/myOrders", userAuth, orderHistory);
+   router.get("/orders", userAuth, orderHistory);
    
    
 export { router as userRouter };

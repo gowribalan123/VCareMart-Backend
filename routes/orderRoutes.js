@@ -24,7 +24,7 @@ router
 // @desc  fetch the orders of the user logged in
 // @route GET /api/orders/myorders
 // @access PRIVATE
-router.route('/myorders').get( getMyOrders);
+router.route('/orders').get( getMyOrders);
 
 // @desc  create payment intent for stripe payment
 // @route POST /api/orders/stripe-payment

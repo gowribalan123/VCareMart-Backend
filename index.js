@@ -24,6 +24,7 @@ app.use(
 
       origin: ["http://localhost:5173", "https://v-care-mart.vercel.app","https://v-care-mart-backend.vercel.app"],
       methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers'
       credentials: true,
   })
 );

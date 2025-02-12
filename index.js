@@ -6,14 +6,14 @@ import {apiRouter} from "./routes/index.js";
 
  
 
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 
-dotenv.config()
+//dotenv.config()
 
 const app = express();
  
 app.use(express.json())
-app.use(cookieParser())
+
 
 app.use(
   cors({
@@ -24,11 +24,12 @@ app.use(
 
       origin: ["http://localhost:5173", "https://v-care-mart.vercel.app","https://vcare-mart-backend.vercel.app"],
       methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],// Allowed HTTP methods
-   // allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers'
+   allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers'
 
       credentials: true,
   })
 );
+app.use(cookieParser())
 
 const port = 3000
 

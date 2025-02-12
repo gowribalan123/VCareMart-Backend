@@ -22,11 +22,7 @@ app.use(
     //front end production domain      https://v-care-mart.vercel.app/
     //backend production domain        https://v-care-mart-backend.vercel.app/ 
 
-<<<<<<< HEAD
       origin: ["http://localhost:5173", "https://v-care-mart.vercel.app","https://v-care-mart-backend.vercel.app"],
-=======
-      origin: ["https://v-care-mart.vercel.app/"],
->>>>>>> e3af3538197cfed4cf21a7f0604bec1fce6a560c
       methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
       credentials: true,
   })
@@ -48,7 +44,7 @@ app.get("test",(req,res)=>{
 app.use("/api",apiRouter);
 
 app.listen(port, () => {
- // console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port ${port}`)
 });
 app.all("*", (req, res) => {
   return res.status(404).json({ message: "end-point does not exist" });
@@ -56,9 +52,9 @@ app.all("*", (req, res) => {
 
 app.listen(process.env.PORT, (err) => {
   if (err) {
-   //   console.log(err);
+      console.log(err);
   } else {
-     // console.log(`server starts on port ${port}`)
+      console.log(`server starts on port ${port}`)
   }
 });
 

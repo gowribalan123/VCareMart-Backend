@@ -24,7 +24,7 @@ app.use(
 
       origin: ["http://localhost:5173", "https://v-care-mart.vercel.app"],
       methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],// Allowed HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers'
+  //allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers'
 
       credentials: true,
   })

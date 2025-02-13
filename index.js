@@ -22,9 +22,9 @@ app.use(
     //front end production domain      https://v-care-mart.vercel.app/
     //backend production domain        https://v-care-mart-backend.vercel.app/ 
 
-      origin: ["http://localhost:5173", "https://v-care-mart.vercel.app","https://vcare-mart-backend.vercel.app"],
+      origin: [ "https://v-care-mart.vercel.app","https://vcare-mart-backend.vercel.app"],
       methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],// Allowed HTTP methods
-  // allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers'
+  allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers'
 
       credentials: true,
   })

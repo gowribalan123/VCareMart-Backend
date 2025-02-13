@@ -6,9 +6,9 @@ import {apiRouter} from "./routes/index.js";
 
  
 
-//import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 
-//dotenv.config()
+dotenv.config()
 
 const app = express();
  
@@ -23,7 +23,7 @@ app.use(
     //backend production domain        https://v-care-mart-backend.vercel.app/ 
 
       origin: ["http://localhost:5173", "https://v-care-mart.vercel.app"],
-      methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],// Allowed HTTP methods
+      methods: ["GET", "PUT", "POST", "DELETE","PATCH", "OPTIONS"],// Allowed HTTP methods
   //allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers'
 
       credentials: true,

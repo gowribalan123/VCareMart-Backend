@@ -2,7 +2,7 @@ import { User } from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
 import { Product } from "../models/productModel.js";  
-
+import { cloudinaryInstance } from "../config/cloudinaryConfig.js";  
 const NODE_ENV = process.env.NODE_ENV;
 
 export const userSignup = async (req, res, next) => {
@@ -204,38 +204,53 @@ export const checkUser = async (req, res, next) => {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
+export const updateUserProfile = async (req, res, next) => {  
+    try {  
+        const userId = req.user.id; // Get user ID from the authenticated request  
 
-export const updateUserProfile = async (req, res, next) => {
-    try {
-        const userId = req.user.id;// Get user ID from URL parameter
-        const { name, email, phone, dob, shippingaddress, billingaddress, profilepic } = req.body;
+        // Destructure the body, omitting profilepic for now  
+        const { name, email, phone, dob, shippingaddress, billingaddress } = req.body;  
 
-        const userData = await User.findById(userId);
+        // Step 1: Find the user  
+        const userData = await User.findById(userId);  
 
-        if (!userData) {
-            return res.status(404).json({ message: "User not found" });
-        }
+        if (!userData) {  
+            return res.status(404).json({ message: "User not found" });  
+        }  
 
-        userData.name = name || userData.name;
-        userData.email = email || userData.email;
-        userData.phone = phone || userData.phone;
-        userData.dob = dob || userData.dob;
-        userData.shippingaddress = shippingaddress || userData.shippingaddress;
-        userData.billingaddress = billingaddress || userData.billingaddress;
-        userData.profilepic = profilepic || userData.profilepic;
+        // Step 2: Prepare an update object  
+        const updatedData = {  
+            name: name || userData.name,  
+            email: email || userData.email,  
+            phone: phone || userData.phone,  
+            dob: dob || userData.dob,  
+            shippingaddress: shippingaddress || userData.shippingaddress,  
+            billingaddress: billingaddress || userData.billingaddress  
+        };  
 
-        const updatedUser = await userData.save();
-         
+        // Step 3: Handle image upload if a new one is provided  
+        if (req.file) {  
+            try {  
+                const uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);  
+                updatedData.profilepic = uploadResult.url; // Set the profile pic URL in updatedData  
+            } catch (uploadError) {  
+                console.error("Error uploading image:", uploadError);  
+                return res.status(500).json({ message: "Image upload failed" });  
+            }  
+        }  
 
-        // Exclude password from the response
-        const userResponse = updatedUser.toObject();
-        delete userResponse.password;
+        // Step 4: Update the user  
+        const updatedUser = await User.findByIdAndUpdate(userId, updatedData, { new: true });  
 
+        // Step 5: Prepare the response, excluding the password  
+        const userResponse = updatedUser.toObject();  
+        delete userResponse.password; // Ensure password is not sent back in the response  
 
-        return res.json({ data: userResponse, message: "User profile updated successfully" });
-    } catch (error) {
-        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
-    }
+        return res.json({ data: userResponse, message: "User profile updated successfully" });  
+    } catch (error) {  
+        console.error(error); // Log the error for debugging  
+        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });  
+    }  
 };
  
 

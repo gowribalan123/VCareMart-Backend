@@ -11,7 +11,7 @@ import {subcategoryRouter} from "./subcategoryRoutes.js";
 import {cartRouter} from "./cartRoutes.js";
 import {reviewRouter} from "./reviewRoutes.js";
 import {orderRouter}  from "./orderRoutes.js";
-//import {paymentRouter} from "./paymentRoutes.js";
+import {paymentRouter} from "./paymentRoutes.js";
 
 const router=e.Router();
 
@@ -25,7 +25,7 @@ router.use("/subcategory",subcategoryRouter);
 //router.use("/productdetails",productdetailsRouter);
 router.use("/cart",cartRouter);
 router.use("/review",reviewRouter);
-//router.use("/payment",paymentRouter);
+router.use("/payment",paymentRouter);
 
 
 export {router as apiRouter};

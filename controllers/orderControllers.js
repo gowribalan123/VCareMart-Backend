@@ -3,11 +3,11 @@ import { Cart } from "../models/cartModel.js";
 import { Product } from "../models/productModel.js";  
 import { sendError, sendSuccess } from '../utils/responseHandlers.js'; 
 import mongoose from 'mongoose';
-
-//import asyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
+
+//import asyncHandler from 'express-async-handler';
 
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -16,7 +16,7 @@ dotenv.config();
 // @desc  create a new order
 // @route GET /api/orders
 // @access PRIVATE
-const addOrderItems = async (req, res) => {
+export const addOrderItems = async (req, res) => {
 	const {
 		orderItems,
 		shippingAddress,
@@ -49,7 +49,7 @@ const addOrderItems = async (req, res) => {
 // @desc  get an order by id
 // @route GET /api/orders/:id
 // @access PRIVATE
-const getOrderById =  async (req, res) => {
+export const getOrderById =  async (req, res) => {
 	const reqOrder = await Order.findById(req.params.id).populate(
 		'user',
 		'name email'
@@ -65,7 +65,7 @@ const getOrderById =  async (req, res) => {
 // @desc  update the order object once paid
 // @route PUT /api/orders/:id/pay
 // @access PRIVATE
-const updateOrderToPay =  async (req, res) => {
+export const updateOrderToPay =  async (req, res) => {
 	const order = await Order.findById(req.params.id);
 	if (order) {
 		const { paymentMode } = req.body;
@@ -100,7 +100,7 @@ const updateOrderToPay =  async (req, res) => {
 // @desc  update the order object once delivered
 // @route PUT /api/orders/:id/pay
 // @access PRIVATE/ADMIN
-const updateOrderToDeliver =  async (req, res) => {
+export const updateOrderToDeliver =  async (req, res) => {
 	const order = await Order.findById(req.params.id);
 	if (order) {
 		order.isDelivered = true;
@@ -117,7 +117,7 @@ const updateOrderToDeliver =  async (req, res) => {
 // @desc  fetch the orders of the user logged in
 // @route GET /api/orders/myorders
 // @access PRIVATE
-const getMyOrders =  async (req, res) => {
+export const getMyOrders =  async (req, res) => {
 	// sort orders in descending order of the date they were created at, hence negetive sign
 	const allOrders = await Order.find({ user: req.user._id }).sort(
 		'-createdAt'
@@ -128,7 +128,7 @@ const getMyOrders =  async (req, res) => {
 // @desc  fetch all orders
 // @route GET /api/orders
 // @access PRIVATE/ADMIN
-const getAllOrders = async (req, res) => {
+export const getAllOrders = async (req, res) => {
 	const page = Number(req.query.pageNumber) || 1; // the current page number in the pagination
 	const pageSize = 20; // total number of entries on a single page
 
@@ -155,7 +155,7 @@ const getAllOrders = async (req, res) => {
 // @desc  create payment intent for stripe payment
 // @route POST /api/orders/stripe-payment
 // @access PUBLIC
-const stripePayment = async (req, res) => {
+export const stripePayment = async (req, res) => {
 	const { price, email } = req.body;
 
 	// Need to create a payment intent according to stripe docs
@@ -199,12 +199,3 @@ const stripePayment = async (req, res) => {
 	// 	.catch((err) => console.log(err));
 };
 
-export {
-	addOrderItems,
-	getOrderById,
-	updateOrderToPay,
-	updateOrderToDeliver,
-	getMyOrders,
-	getAllOrders,
-	stripePayment,
-};

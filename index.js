@@ -4,12 +4,13 @@ import {connectDB} from "./config/db.js";
 import cors from "cors";
 import {apiRouter} from "./routes/index.js";
 
- 
+//import Stripe from 'stripe';
+
 
 import dotenv from 'dotenv';
 
 dotenv.config()
-
+//const stripe = new Stripe(process.env.STRIPE_API_KEY); // Use the API key from environment variable
 const app = express();
  
 app.use(express.json())

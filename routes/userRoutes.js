@@ -18,7 +18,7 @@ router.post("/updateprofile", userAuth, updateUserProfile);
 //router.post("/updateprofile/:_id", userAuth, updateUserProfile);
 
 
-
+router.get('/get-all-user', )
 
 //logout
 router.get("/logout", userAuth, userLogout);

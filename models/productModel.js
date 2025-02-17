@@ -56,11 +56,19 @@ const productSchema = new Schema({
         default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaLGtEd0MJro4X9wDmT2vrvLT-HjKkyyWVmg&s",
     }
 , 
-seller: { type: mongoose.Types.ObjectId, ref: "Seller" },
+seller: { 
+    type: mongoose.Types.ObjectId,
+     ref: "Seller" 
+    },
 
 subcategoryid: {  
     type: mongoose.Types.ObjectId,  
     ref: "subcategory",  
+    required: true,  
+}  ,
+categoryid: {  
+    type: mongoose.Types.ObjectId,  
+    ref: "category",  
     required: true,  
 }  ,
 

@@ -15,7 +15,7 @@ export const createProduct = async (req, res, next) => {
         }  
     // Destructure fields from the request body  
 
-        const { name, description, subcategoryid, age_group,size, color, price, stock, weight, rating,seller} = req.body;  
+        const { name, description, categoryid ,subcategoryid, age_group,size, color, price, stock, weight, rating,seller} = req.body;  
        
 
         
@@ -25,7 +25,7 @@ export const createProduct = async (req, res, next) => {
 
   // const { id } = req.user;
         // Check if the required fields are present  
-        if (!name || !description || !subcategoryid || !age_group || !size|| !color || !price || !stock ||!weight || !rating) {  
+        if (!name || !description ||!categoryid|| !subcategoryid || !age_group || !size|| !color || !price || !stock ||!weight || !rating) {  
             return res.status(400).json({ message: "All fields are required" });  
         }  
        const sellerId=req.seller.id;
@@ -46,6 +46,7 @@ export const createProduct = async (req, res, next) => {
         const newProduct = new Product({  
             name,  
             description,  
+            categoryid,
             subcategoryid,
             age_group,
             size,  
@@ -85,7 +86,7 @@ export const getProductDetails = async (req, res) => {
         const { productId } = req.params; // Destructure productId from request parameters
     
         const productDetails = await Product.findById(productId)
-       // .populate("seller") // Fetch product and populate seller
+       .populate("seller") // Fetch product and populate seller
        // .populate("category")
        // .populate("subcategory")
         
@@ -168,7 +169,7 @@ export const deleteProduct = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });  
     }  
 };
-// Get products by subcategory ID
+
 // Get products by subcategory ID
 export const getProductBySubCategory = async (req, res) => {
     try {
@@ -195,6 +196,37 @@ export const getProductBySubCategory = async (req, res) => {
         return res.status(200).json({ message: "Products fetched successfully", data: products });
     } catch (error) {
         console.error("Error fetching products by subcategory:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+// Get products by category ID
+export const getProductByCategory = async (req, res) => {
+    try {
+        // Ensure categoryid is provided in the request parameters
+        const { categoryid } = req.params;
+
+        if (!categoryid) {
+            return res.status(400).json({ message: "category ID is required" });
+        }
+
+        // Validate the category ID format
+        if (!mongoose.Types.ObjectId.isValid(categoryid)) {
+            return res.status(400).json({ message: "Invalid category ID format" });
+        }
+
+        // Find products by category ID
+        const products = await Product.find({ categoryid })
+       //  .populate("category"); // Populate category details
+
+        if (!products.length) {
+            return res.status(404).json({ message: "No products found for this category" });
+        }
+
+        return res.status(200).json({ message: "Products fetched successfully", data: products });
+    } catch (error) {
+        console.error("Error fetching products by category:", error);
         return res.status(500).json({ message: "Internal server error" });
     }
 };

@@ -1,77 +1,58 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import {connectDB} from "./config/db.js";
+import { connectDB } from "./config/db.js";
 import cors from "cors";
-import {apiRouter} from "./routes/index.js";
-
-//import Stripe from 'stripe';
-
-
+import { apiRouter } from "./routes/index.js";
 import dotenv from 'dotenv';
 
-dotenv.config()
-//const stripe = new Stripe(process.env.STRIPE_API_KEY); // Use the API key from environment variable
+dotenv.config();
+
 const app = express();
- 
-app.use(express.json())
+const port = process.env.PORT || 3000; // Use environment variable or default to 3000
 
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
 
+// CORS configuration
 app.use(
   cors({
-      //origin: ["https://v-care-mart.vercel.app/", "https://v-care-mart-backend.vercel.app/"],
-    //front end Local development      http://localhost:5173
-    //front end production domain      https://v-care-mart.vercel.app/
-    //backend production domain        https://v-care-mart-backend.vercel.app/ 
-
-      origin: ["http://localhost:5173", "https://v-care-mart.vercel.app"],// Allow this origin
-      methods: ["GET", "PUT", "POST", "DELETE","PATCH", "OPTIONS"],// Allowed HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers'
-
-      credentials: true,
+    origin: ["http://localhost:5173", "https://v-care-mart.vercel.app"], // Allowed origins
+    methods: ["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"], // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+    credentials: true, // Allow credentials
   })
 );
-app.use(cookieParser())
 
-const port = 3000
-
+// Connect to the database
 connectDB();
 
-
+// Test endpoint
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hello World!');
 });
 
-app.get("test",(req,res)=>{
-    res.send("test");
+// CORS test endpoint
+app.get('/test-cors', (req, res) => {
+  res.json({ message: "CORS is working!" });
 });
-app.options('*', cors()); // Enable pre-flight requests for all routes
 
-app.use("/api",apiRouter);
+// Preflight requests
+app.options('*', cors());
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-});
+// API routes
+app.use("/api", apiRouter);
+
+// Handle 404 for undefined routes
 app.all("*", (req, res) => {
-  return res.status(404).json({ message: "end-point does not exist" });
+  return res.status(404).json({ message: "Endpoint does not exist" });
 });
 
-app.listen(process.env.PORT, (err) => {
+// Start the server
+app.listen(port, (err) => {
   if (err) {
-      console.log(err);
+    console.log(err);
   } else {
-      console.log(`server starts on port ${port}`)
+    console.log(`Server starts on port ${port}`);
   }
 });
-
-
-//http://localhost:3000/api/courses/create-course
-
-//http://localhost:3000/api/user/signup
-//http://localhost:3000/api/user/login
-//http://localhost:3000/api/user/profile
-//http://localhost:3000/api/user/edit-profile
-
-//http://localhost:3000/api/mentor/signup
-//http://localhost:3000/api/mentor/login
-//http://localhost:3000/api/mentor/profile
-//http://localhost:3000/api/mentor/edit-profile

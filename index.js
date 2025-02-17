@@ -17,7 +17,7 @@ app.use(cookieParser());
 // CORS configuration
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://v-care-mart-frontend.vercel.app"], // Allowed origins
+    origin: ["http://localhost:5173", "https://v-care-mart-frontend.vercel.app","https://vcaremart-backend.onrender.com"], // Allowed origins
     methods: ["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"], // Allowed HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
     credentials: true, // Allow credentials

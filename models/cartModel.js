@@ -31,7 +31,7 @@ const cartSchema = new Schema({
     seller: { type: mongoose.Types.ObjectId, ref: "Seller" },
     category: { type: mongoose.Types.ObjectId, ref: "Category"},
     
-    subcategory: { type: mongoose.Types.ObjectId, ref: "subCategory"},
+    subcategory: { type: mongoose.Types.ObjectId, ref: "SubCategory"},
 });
 
 

@@ -1,7 +1,7 @@
 import { Cart } from "../models/cartModel.js";
 import { Product } from "../models/productModel.js";
 import { Category } from "../models/categoryModel.js";  
-import { SubCategory } from "../models/SubCategoryModel.js";  
+import { SubCategory } from "../models/subcategoryModel.js";  
 
 export const getCart = async (req, res) => {
     try {

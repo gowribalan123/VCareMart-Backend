@@ -1,6 +1,6 @@
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js";  
 import mongoose from 'mongoose';
-import {SubCategory  } from "../models/SubCategoryModel.js";  
+import {SubCategory  } from "../models/subcategoryModel.js";  
 import {Product} from '../models/productModel.js'
 import {Seller} from '../models/sellerModel.js'
 import {Category} from '../models/categoryModel.js'

@@ -1,0 +1,280 @@
+[{
+  "_id": {
+    "$oid": "67a99fce8c41ade16a48dc70"
+  },
+  "subcategoryid": {
+    "$oid": "67a9acc6c575e8d5efb0df54"
+  },
+  "name": "KURTI1",
+  "description": "plain cotton yellow kurti",
+  "price": 600,
+  "age_group": ">15",
+  "size": "L",
+  "color": "yellow",
+  "stock": 40,
+  "weight": "500gm",
+  "rating": 4.9,
+  "image": "http://res.cloudinary.com/dvvacfrz3/image/upload/v1739169742/d2xt0watao1wjwxwkygh.webp",
+  "seller": {
+    "$oid": "67a10101795db54c97d4387f"
+  },
+  "createdAt": {
+    "$date": "2025-02-10T06:42:22.034Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-10T06:42:22.034Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67a9afb1c575e8d5efb0df65"
+  },
+  "subcategoryid": {
+    "$oid": "67a9acc6c575e8d5efb0df54"
+  },
+  "name": "KURTI2",
+  "description": "plain cotton pink kurti",
+  "price": 600,
+  "age_group": ">15",
+  "size": "L",
+  "color": "pink",
+  "stock": 40,
+  "weight": "500gm",
+  "rating": 4,
+  "image": "http://res.cloudinary.com/dvvacfrz3/image/upload/v1739173810/fcichungdlx3ngxkgt8c.jpg",
+  "seller": {
+    "$oid": "67a10101795db54c97d4387f"
+  },
+  "createdAt": {
+    "$date": "2025-02-10T07:50:09.639Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-10T07:50:09.639Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67a9afe5c575e8d5efb0df67"
+  },
+  "subcategoryid": {
+    "$oid": "67a9acc6c575e8d5efb0df54"
+  },
+  "name": "KURTI3",
+  "description": "plain cotton blue kurti",
+  "price": 600,
+  "age_group": ">15",
+  "size": "L",
+  "color": "blue",
+  "stock": 40,
+  "weight": "500gm",
+  "rating": 4,
+  "image": "http://res.cloudinary.com/dvvacfrz3/image/upload/v1739173861/v9j1b78cwd4invizoxv3.jpg",
+  "seller": {
+    "$oid": "67a10101795db54c97d4387f"
+  },
+  "createdAt": {
+    "$date": "2025-02-10T07:51:01.138Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-10T07:51:01.138Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67a9b18bee73db39f07859f2"
+  },
+  "subcategoryid": {
+    "$oid": "67a9abdec575e8d5efb0df52"
+  },
+  "name": "SHIRT 1",
+  "description": "plain cotton white shirt",
+  "price": 600,
+  "age_group": ">15",
+  "size": "L",
+  "color": "white",
+  "stock": 40,
+  "weight": "500gm",
+  "rating": 4,
+  "image": "http://res.cloudinary.com/dvvacfrz3/image/upload/v1739174283/emwidbvuhkxtky73kltn.jpg",
+  "seller": {
+    "$oid": "67a10101795db54c97d4387f"
+  },
+  "createdAt": {
+    "$date": "2025-02-10T07:58:03.029Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-10T07:58:03.029Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67a9b1c3ee73db39f07859f4"
+  },
+  "subcategoryid": {
+    "$oid": "67a9abdec575e8d5efb0df52"
+  },
+  "name": "SHIRT 2",
+  "description": "plain cotton black shirt",
+  "price": 600,
+  "age_group": ">15",
+  "size": "L",
+  "color": "black",
+  "stock": 40,
+  "weight": "500gm",
+  "rating": 4,
+  "image": "http://res.cloudinary.com/dvvacfrz3/image/upload/v1739174340/carfqquqdz2ncbkftyqp.jpg",
+  "seller": {
+    "$oid": "67a10101795db54c97d4387f"
+  },
+  "createdAt": {
+    "$date": "2025-02-10T07:58:59.500Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-10T07:58:59.500Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67a9bc3c01c12645d70c06fc"
+  },
+  "subcategoryid": {
+    "$oid": "67a9abdec575e8d5efb0df52"
+  },
+  "name": "SHIRT 3",
+  "description": "plain cotton green shirt",
+  "price": 600,
+  "age_group": ">15",
+  "size": "XL",
+  "color": "bllue",
+  "stock": 40,
+  "weight": "500gm",
+  "rating": 4.5,
+  "image": "http://res.cloudinary.com/dvvacfrz3/image/upload/v1739177021/ynf2zfu6syhu2ocvmvcd.jpg",
+  "seller": {
+    "$oid": "67a10101795db54c97d4387f"
+  },
+  "createdAt": {
+    "$date": "2025-02-10T08:43:40.961Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-10T08:43:40.961Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67a9bcbe01c12645d70c06fe"
+  },
+  "subcategoryid": {
+    "$oid": "67a9af24c575e8d5efb0df61"
+  },
+  "name": "T-SHIRT 1",
+  "description": "plain cotton XXXXXXXXXXXXXXXXXXXXX ",
+  "price": 600,
+  "age_group": "8-15",
+  "size": "s",
+  "color": "bllue",
+  "stock": 40,
+  "weight": "500gm",
+  "rating": 4,
+  "image": "http://res.cloudinary.com/dvvacfrz3/image/upload/v1739177151/vadddh9ti638nonwauhj.jpg",
+  "seller": {
+    "$oid": "67a10101795db54c97d4387f"
+  },
+  "createdAt": {
+    "$date": "2025-02-10T08:45:50.447Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-10T08:45:50.447Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67a9bd1901c12645d70c0700"
+  },
+  "subcategoryid": {
+    "$oid": "67a9af63c575e8d5efb0df63"
+  },
+  "name": "Frock 1",
+  "description": "plain cotton XXXXXXXXXXXXXXXXXXXXX ",
+  "price": 660,
+  "age_group": "4-8",
+  "size": "s",
+  "color": "red",
+  "stock": 40,
+  "weight": "500gm",
+  "rating": 4,
+  "image": "http://res.cloudinary.com/dvvacfrz3/image/upload/v1739177242/zxtk2u5zkb5jl63woqhi.jpg",
+  "seller": {
+    "$oid": "67a10101795db54c97d4387f"
+  },
+  "createdAt": {
+    "$date": "2025-02-10T08:47:21.070Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-10T08:47:21.070Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67a9bd6b01c12645d70c0703"
+  },
+  "subcategoryid": {
+    "$oid": "67a9af63c575e8d5efb0df63"
+  },
+  "name": "Frock 2",
+  "description": "plain cotton FROCK - Size -small -color -pink ",
+  "price": 660,
+  "age_group": "4-8",
+  "size": "S",
+  "color": "pink",
+  "stock": 40,
+  "weight": "500gm",
+  "rating": 4,
+  "image": "http://res.cloudinary.com/dvvacfrz3/image/upload/v1739177324/xjp4htvcfwpuahjhtbog.webp",
+  "seller": {
+    "$oid": "67a10101795db54c97d4387f"
+  },
+  "createdAt": {
+    "$date": "2025-02-10T08:48:43.105Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-10T08:48:43.105Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67b312d523c41c07d0958f8e"
+  },
+  "subcategoryid": {
+    "$oid": "67a9abdec575e8d5efb0df52"
+  },
+  "name": "pant 5",
+  "description": "plain cotton  pant XXXXXXXXXXXXXXXXXXXXX ",
+  "price": 500,
+  "age_group": ">15",
+  "size": "L",
+  "color": "pink",
+  "stock": 40,
+  "weight": "500gm",
+  "rating": 4,
+  "image": "http://res.cloudinary.com/dvvacfrz3/image/upload/v1739789012/vljredfhaprxntv8flsf.jpg",
+  "seller": {
+    "$oid": "67a10101795db54c97d4387f"
+  },
+  "createdAt": {
+    "$date": "2025-02-17T10:43:33.324Z"
+  },
+  "updatedAt": {
+    "$date": "2025-02-17T10:43:33.324Z"
+  },
+  "__v": 0
+}]

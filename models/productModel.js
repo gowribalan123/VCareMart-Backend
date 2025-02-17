@@ -1,11 +1,7 @@
 import mongoose, { Schema } from "mongoose";  
 
 const productSchema = new Schema({  
-    subcategoryid: {  
-        type: mongoose.Types.ObjectId,  
-        ref: "subcategory",  
-        required: true, // Ensure seller is required  
-    }  ,
+ 
     name: {  
         type: String,  
         required: true,  
@@ -61,6 +57,13 @@ const productSchema = new Schema({
     }
 , 
 seller: { type: mongoose.Types.ObjectId, ref: "Seller" },
+
+subcategoryid: {  
+    type: mongoose.Types.ObjectId,  
+    ref: "subcategory",  
+    required: true,  
+}  ,
+
 }, 
 { timestamps: true }
 );  

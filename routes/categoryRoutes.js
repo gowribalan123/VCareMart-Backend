@@ -13,7 +13,7 @@ router.get("/get-all-category", getAllCategory);
 router.post("/create-category", sellerAuth, upload.single('image'), createCategory);
 
  
-router.get("/category-details/:name", getCategoryDetails);
+router.get("/category-details/:categoryId", getCategoryDetails);
 
 
 export { router as categoryRouter };

@@ -1,16 +1,28 @@
 import { Cart } from "../models/cartModel.js";
 import { Product } from "../models/productModel.js";
+import { Category } from "../models/categoryModel.js";  
+import { SubCategory } from "../models/SubCategoryModel.js";  
 
 export const getCart = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        const cart = await Cart.findOne({ userId }).populate("products.productId");
+        const cart = await Cart.findOne({ userId })
+        .populate("products.productId")
+        .populate('category') // Populate category
+        .populate('seller') // Populate seller
+        .populate('subcategory') // Populate category
+        
+
+        const categories = await Category.find();
+        const subcategories = await SubCategory.find();
+
+
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
         }
 
-        res.status(200).json({ data: cart, message: "cart fetched successfully" });
+        res.status(200).json({ data: cart,categories,subcategories, message: "cart fetched successfully" });
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error });
     }

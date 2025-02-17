@@ -74,11 +74,11 @@ export const getAllCategory = async (req, res) => {
 //get a single category by name
 export const getCategoryDetails = async (req, res) => {  
     try {
-        const { name } = req.params; // Destructure category name from request parameters
-        console.log(name);
+        const { categoryId } = req.params; // Destructure category name from request parameters
+        console.log(categoryId);
 
         // Use the correct query to find the category by name
-        const categoryDetails = await Category.findOne({ name }, 'name image description').populate("seller"); // Fetch specific fields and populate seller
+        const categoryDetails = await Category.findById(categoryId).populate("seller"); // Fetch specific fields and populate seller
 
         if (!categoryDetails) {
             return res.status(404).json({ message: "Category not found" }); // Handle case where category doesn't exist

@@ -1,7 +1,9 @@
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js";  
 import mongoose from 'mongoose';
-import {subCategory  } from "../models/subCategoryModel.js";  
-
+import {SubCategory  } from "../models/SubCategoryModel.js";  
+import {Product} from '../models/productModel.js'
+import {Seller} from '../models/sellerModel.js'
+import {Category} from '../models/categoryModel.js'
 // Create a new category  
 export const createsubCategory = async (req, res, next) => {  
     try {  
@@ -41,7 +43,7 @@ export const createsubCategory = async (req, res, next) => {
 
         //console.log(sellerId)
         // Create a new category  
-        const newsubCategory = new subCategory({  
+        const newsubCategory = new SubCategory({  
             name,  
             description,
             category_id,  
@@ -63,10 +65,33 @@ export const createsubCategory = async (req, res, next) => {
 // Get all products  
 export const getAllsubCategory = async (req, res) => {  
     try {  
-        const subcategory = await subCategory.find();  
+        const subcategory = await SubCategory.find();  
         return res.json({ data: subcategory, message: "SubCategory fetched successfully" });  
     } catch (error) {  
         console.error("Error fetching categories:", error);  
         return res.status(500).json({ message: "Internal server error" });  
     }  
 };  
+
+export const getsubCategoryDetails = async (req, res) => {  
+    try {
+        const { subcategoryId } = req.params; // Destructure subcategory name from request parameters
+        console.log(subcategoryId);
+
+        // Use the correct query to find the subcategory by name
+        const subcategoryDetails = await SubCategory.findById(subcategoryId) 
+        //.populate('category') // Populate category
+      ///  .populate('seller');  // Populate seller
+      
+       /// const products = await Product.find({ subcategoryId });
+       const categories = await Category.find();
+        if (!subcategoryDetails) {
+            return res.status(404).json({ message: "SubCategory not found" }); // Handle case where subcategory doesn't exist
+        }
+
+        res.status(200).json({ message: "SubCategory details fetched", data: subcategoryDetails,categories});
+    } catch (error) {
+        console.error("Error fetching subcategory details:", error); // Use console.error for error logging
+        res.status(error.status || 500).json({ error: error.message || "Internal server error" });
+    }
+};

@@ -1,6 +1,8 @@
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js";  
 import mongoose from 'mongoose';
 import { Product } from "../models/productModel.js";  
+import { Category } from "../models/categoryModel.js";  
+import { SubCategory } from "../models/SubCategoryModel.js";  
 
 // Create a new product  
 export const createProduct = async (req, res, next) => {  
@@ -27,7 +29,7 @@ export const createProduct = async (req, res, next) => {
             return res.status(400).json({ message: "All fields are required" });  
         }  
        const sellerId=req.seller.id;
-        
+    
     
         // Handle file upload to Cloudinary  
         let uploadResult;  
@@ -44,7 +46,7 @@ export const createProduct = async (req, res, next) => {
         const newProduct = new Product({  
             name,  
             description,  
-            subcategoryid,  
+            subcategoryid,
             age_group,
             size,  
             color,  
@@ -82,13 +84,20 @@ export const getProductDetails = async (req, res) => {
     try {
         const { productId } = req.params; // Destructure productId from request parameters
     
-        const productDetails = await Product.findById(productId).populate("seller"); // Fetch product and populate seller
-    
+        const productDetails = await Product.findById(productId)
+       // .populate("seller") // Fetch product and populate seller
+       // .populate("category")
+       // .populate("subcategory")
+        
+
+        const categories = await Category.find();
+        const subcategories = await SubCategory.find();
+
         if (!productDetails) {
             return res.status(404).json({ message: "Product not found" }); // Handle case where product doesn't exist
         }
     
-        res.status(200).json({ message: "Product details fetched", data: productDetails });
+        res.status(200).json({ message: "Product details fetched", data: productDetails ,categories,subcategories});
     } catch (error) {
         console.error("Error fetching product details:", error); // Use console.error for error logging
         res.status(error.status || 500).json({ error: error.message || "Internal server error" });
@@ -158,4 +167,34 @@ export const deleteProduct = async (req, res) => {
         console.error("Error deleting product:", error);  
         return res.status(500).json({ message: "Internal server error" });  
     }  
+};
+// Get products by subcategory ID
+// Get products by subcategory ID
+export const getProductBySubCategory = async (req, res) => {
+    try {
+        // Ensure subcategoryid is provided in the request parameters
+        const { subcategoryid } = req.params;
+
+        if (!subcategoryid) {
+            return res.status(400).json({ message: "Subcategory ID is required" });
+        }
+
+        // Validate the subcategory ID format
+        if (!mongoose.Types.ObjectId.isValid(subcategoryid)) {
+            return res.status(400).json({ message: "Invalid subcategory ID format" });
+        }
+
+        // Find products by subcategory ID
+        const products = await Product.find({ subcategoryid })
+       //  .populate("subcategory"); // Populate subcategory details
+
+        if (!products.length) {
+            return res.status(404).json({ message: "No products found for this subcategory" });
+        }
+
+        return res.status(200).json({ message: "Products fetched successfully", data: products });
+    } catch (error) {
+        console.error("Error fetching products by subcategory:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 };

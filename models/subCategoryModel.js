@@ -26,9 +26,10 @@ const subcategorySchema = new Schema({
         default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaLGtEd0MJro4X9wDmT2vrvLT-HjKkyyWVmg&s",
     }
 , 
-seller: { type: mongoose.Types.ObjectId, ref: "Seller" },
+//seller: { type: mongoose.Types.ObjectId, ref: "Seller" },
+//category: { type: mongoose.Types.ObjectId, ref: "Category"},
 }, 
 { timestamps: true }
 );  
 
-export const subCategory = mongoose.model("SubCategory", subcategorySchema);
+export const SubCategory = mongoose.model("SubCategory", subcategorySchema);

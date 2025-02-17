@@ -23,7 +23,7 @@ app.use(
     //front end production domain      https://v-care-mart.vercel.app/
     //backend production domain        https://v-care-mart-backend.vercel.app/ 
 
-      origin: ["http://localhost:5173", "https://v-care-mart.vercel.app"],
+      origin: ["http://localhost:5173", "https://v-care-mart.vercel.app"],// Allow this origin
       methods: ["GET", "PUT", "POST", "DELETE","PATCH", "OPTIONS"],// Allowed HTTP methods
   allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers'
 
@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
 app.get("test",(req,res)=>{
     res.send("test");
 });
+app.options('*', cors()); // Enable pre-flight requests for all routes
 
 app.use("/api",apiRouter);
 

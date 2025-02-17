@@ -1,8 +1,10 @@
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js";  
 import mongoose from 'mongoose';
 import { Product } from "../models/productModel.js";  
-import { Category } from "../models/categoryModel.js";  
-import { SubCategory } from "../models/SubCategoryModel.js";  
+//import { Category } from "../models/categoryModel.js";  
+//import { SubCategory } from "../models/SubCategoryModel.js";  
+
+
 
 // Create a new product  
 export const createProduct = async (req, res, next) => {  

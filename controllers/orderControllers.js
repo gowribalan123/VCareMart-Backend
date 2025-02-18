@@ -9,8 +9,7 @@ import dotenv from 'dotenv';
 
 //import asyncHandler from 'express-async-handler';
 
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.Stripe_Private_Api_Key);
 dotenv.config();
 
 // @desc  create a new order

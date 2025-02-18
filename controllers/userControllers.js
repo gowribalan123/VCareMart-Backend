@@ -394,13 +394,13 @@ export const orderHistory = async (req, res) => {
     }
 };
 export const userLogout = async (req, res, next) => {
-    try {
+    try { 
       //  res.clearCookie("token");
       res.clearCookie("token", {
         sameSite: NODE_ENV === "production" ? "None" : "Lax",
         secure: NODE_ENV === "production",
         httpOnly: NODE_ENV === "production",
-    });
+    }); 
 
         return res.json({ message: "user logout success" });
     } catch (error) {

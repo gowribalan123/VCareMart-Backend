@@ -12,23 +12,24 @@ export const userSignup = async (req, res, next) => {
         const { 
             name, 
             email, 
-            password
+            password,
+            image,
          //   phone, 
          //   dob
         } = req.body;
 
         // Validate required fields
-        if (!name || !email || !password  ) {
+        if (!name || !email || !password ) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        // Handle file upload to Cloudinary  
-       /// let uploadResult;  
-       // if (req.file) {  
-       //     uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);  
-      //  } else {  
-           // return res.status(400).json({ message: "File is required" });  
-       // }  
+        ///Handle file upload to Cloudinary  
+      // let uploadResult;  
+      // if (req.file) {  
+       //    uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);  
+     // } else {  
+      //     return res.status(400).json({ message: "File is required" });  
+      //  }  
 
         // Check if user already exists
         const isUserExist = await User.findOne({ email });
@@ -46,8 +47,8 @@ export const userSignup = async (req, res, next) => {
             password: hashedPassword, 
           //  phone, 
           //  dob, 
-        
-          //  image: uploadResult.url,  
+        image
+         //  image: uploadResult.url,  
         });
 
         // Save user data to the database
@@ -233,7 +234,7 @@ export const updateUserProfile = async (req, res, next) => {
         const userId = req.user.id; // Get user ID from the authenticated request  
 
         // Destructure the body, omitting profilepic for now  
-        const { name, email, phone, dob, shippingaddress, billingaddress } = req.body;  
+        const { name, email } = req.body;  
 
         // Step 1: Find the user  
         const userData = await User.findById(userId);  

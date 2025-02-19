@@ -14,8 +14,8 @@ const userSchema = new mongoose.Schema({
     confirmPassword: { type: String, required: true }, // Typically not stored, just for validation
     phone: { type: String, required: true }, // If phone is necessary
     dob: { type: Date }, // If date of birth is necessary
-    shippingAddress: { type: addressSchema, required: true },
-    billingAddress: { type: addressSchema, required: true },
+    shippingaddress: { type: addressSchema, required: true },
+    billingaddress: { type: addressSchema, required: true },
     remember: { type: Boolean, default: false },
 }, { timestamps: true });
 

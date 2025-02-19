@@ -5,50 +5,70 @@ import { Product } from "../models/productModel.js";
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js";  
 const NODE_ENV = process.env.NODE_ENV;
 
+ 
+
 export const userSignup = async (req, res, next) => {
     try {
-       // console.log("hitted");
+        const { 
+            name, 
+            email, 
+            password, 
+            phone, 
+            dob, 
+            shippingAddress, 
+            billingAddress, 
+            profilePic 
+        } = req.body;
 
-        const { name, email, password, phone, dob,shippingaddress,billingaddress,profilepic,created_at } = req.body;
-
-        if (!name || !email || !password || !phone || !dob || !shippingaddress || !billingaddress) {
-            return res.status(400).json({ message: "all fields are required" });
+        // Validate required fields
+        if (!name || !email || !password || !phone || !dob || !shippingAddress || !billingAddress) {
+            return res.status(400).json({ message: "All fields are required" });
         }
 
+        // Check if user already exists
         const isUserExist = await User.findOne({ email });
-
         if (isUserExist) {
-            return res.status(400).json({ message: "user already exist" });
+            return res.status(400).json({ message: "User already exists" });
         }
 
+        // Hash the password
         const hashedPassword = bcrypt.hashSync(password, 10);
 
-     
+        // Create a new user instance
+        const userData = new User({ 
+            name, 
+            email, 
+            password: hashedPassword, 
+            phone, 
+            dob, 
+            shippingAddress, 
+            billingAddress, 
+            profilePic 
+        });
 
-        const userData = new User({ name, email, password: hashedPassword, phone,dob,shippingaddress,billingaddress, profilepic,created_at });
+        // Save user data to the database
         await userData.save();
 
+        // Generate a token for the user
         const token = generateToken(userData._id);
-       //res.cookie("token", token);
 
-       res.cookie("token", token, {
-        sameSite: NODE_ENV === "production" ? "None" : "Lax",
-        secure: NODE_ENV === "production",
-        httpOnly: NODE_ENV === "production",
-    });
+        // Set cookie with the token
+        res.cookie("token", token, {
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+            secure: process.env.NODE_ENV === "production",
+            httpOnly: true,
+        });
 
-// Exclude password from the response 
- //const userResponse = userData.toObject();
-  //delete userResponse.password;
-    
-      return res.json({ data: userData, message: "user account created" });
-       
-     // return res.json({ data: userData, message: "user account created" });
+        // Exclude password from the response
+        const userResponse = userData.toObject();
+        delete userResponse.password;
 
+        return res.status(201).json({ data: userResponse, message: "User account created" });
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
+
 
 export const userLogin = async (req, res, next) => {
     try {

@@ -15,16 +15,24 @@ export const userSignup = async (req, res, next) => {
             password, 
             phone, 
             dob, 
-            shippingAddress, 
-            billingAddress, 
-            profilePic 
+            shippingaddress, 
+            billingaddress, 
+          
         } = req.body;
 
         // Validate required fields
-        if (!name || !email || !password || !phone || !dob || !shippingAddress || !billingAddress) {
+        if (!name || !email || !password || !phone || !dob || !shippingaddress || !billingaddress) {
             return res.status(400).json({ message: "All fields are required" });
         }
-
+   // Handle file upload to Cloudinary  
+   let uploadResult;  
+   if (req.file) {  
+       uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);  
+       console.log("Upload result:", uploadResult);  
+       
+   } else {  
+       return res.status(400).json({ message: "File is required" });  
+   }  
         // Check if user already exists
         const isUserExist = await User.findOne({ email });
         if (isUserExist) {
@@ -41,9 +49,9 @@ export const userSignup = async (req, res, next) => {
             password: hashedPassword, 
             phone, 
             dob, 
-            shippingAddress, 
-            billingAddress, 
-            profilePic 
+            shippingaddress, 
+            billingaddress, 
+            image: uploadResult.url,  
         });
 
         // Save user data to the database

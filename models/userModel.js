@@ -19,12 +19,7 @@ const userSchema = new Schema(
             required: true,
             minLength: 6,
         },
-        role:{
-            type:String,
-            //required:true,  
-            enum: ["admin", "seller"],
-            default: "seller",
-          },
+      
           
        // phone: {
         //    type: String,

@@ -15,7 +15,8 @@ export const userSignup = async (req, res, next) => {
             password,
             image,
          //   phone, 
-         //   dob
+         //   dob,
+         //shippingaddress
         } = req.body;
 
         // Validate required fields
@@ -47,6 +48,7 @@ export const userSignup = async (req, res, next) => {
             password: hashedPassword, 
           //  phone, 
           //  dob, 
+          //shippingaddress
         image
          //  image: uploadResult.url,  
         });
@@ -250,14 +252,14 @@ export const updateUserProfile = async (req, res, next) => {
             phone: phone || userData.phone,  
             dob: dob || userData.dob,  
             shippingaddress: shippingaddress || userData.shippingaddress,  
-            billingaddress: billingaddress || userData.billingaddress  
+           // billingaddress: billingaddress || userData.billingaddress  
         };  
 
         // Step 3: Handle image upload if a new one is provided  
         if (req.file) {  
             try {  
                 const uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);  
-                updatedData.profilepic = uploadResult.url; // Set the profile pic URL in updatedData  
+                updatedData.image = uploadResult.url; // Set the profile pic URL in updatedData  
             } catch (uploadError) {  
                 console.error("Error uploading image:", uploadError);  
                 return res.status(500).json({ message: "Image upload failed" });  

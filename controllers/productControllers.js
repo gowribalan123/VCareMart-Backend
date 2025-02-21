@@ -93,14 +93,14 @@ export const getProductDetails = async (req, res) => {
        // .populate("subcategory")
         
 
-        const categories = await Category.find();
-        const subcategories = await SubCategory.find();
+      //  const categories = await Category.find();
+        //const subcategories = await SubCategory.find();
 
         if (!productDetails) {
             return res.status(404).json({ message: "Product not found" }); // Handle case where product doesn't exist
         }
     
-        res.status(200).json({ message: "Product details fetched", data: productDetails ,categories,subcategories});
+        res.status(200).json({ message: "Product details fetched", data: productDetails });
     } catch (error) {
         console.error("Error fetching product details:", error); // Use console.error for error logging
         res.status(error.status || 500).json({ error: error.message || "Internal server error" });

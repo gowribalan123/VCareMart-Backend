@@ -9,9 +9,9 @@ export const sellerSignup = async (req, res, next) => {
     try {
       //  console.log("hitted");
 
-        const { name, email, password, phone, dob,shippingaddress,billingaddress,profilepic,noofproducts,role,created_at } = req.body;
-
-        if (!name || !email || !password || !phone || !dob || !shippingaddress || !billingaddress|| !noofproducts) {
+       //const { name, email, password, phone, dob,shippingaddress,image,noofproducts,role,created_at } = req.body;
+       const { name, email, password,role,created_at } = req.body;
+        if (!name || !email || !password|| !role) {
             return res.status(400).json({ message: "all fields are required" });
         }
 
@@ -25,7 +25,7 @@ export const sellerSignup = async (req, res, next) => {
 
      
 
-        const sellerData = new Seller({ name, email, password: hashedPassword, phone,dob,shippingaddress,billingaddress, profilepic,noofproducts,role,created_at });
+        const sellerData = new Seller({ name, email, password: hashedPassword,role,created_at });
         await sellerData.save();
 
         const token = generateToken(sellerData._id);
@@ -83,10 +83,10 @@ export const sellerLogin = async (req, res, next) => {
 export const sellerProfile = async (req, res, next) => {
     try {
       //  const sellerId = req.seller.id;
-      const { user } =req;
+      const { seller } =req;
 
-        const userData = await Seller.findById(user.id).select("-password");
-        return res.json({ success:true , message: "user profile fetched" ,userData});
+        const sellerData = await Seller.findById(seller.id).select("-password");
+        return res.json({ success:true , message: "Seller profile fetched" ,sellerData});
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
@@ -206,8 +206,8 @@ export const updateSellerProfile = async (req, res, next) => {
         sellerData.phone = phone || sellerData.phone;
         sellerData.dob = dob || sellerData.dob;
         sellerData.shippingaddress = shippingaddress || sellerData.shippingaddress;
-        sellerData.billingaddress = billingaddress || sellerData.billingaddress;
-        sellerData.profilepic = profilepic || sellerData.profilepic;
+      //  sellerData.billingaddress = billingaddress || sellerData.billingaddress;
+        sellerData.image = profilepic || sellerData.image;
         sellerData.noofproducts=noofproducts || sellerData.noofproducts;
 
         const updatedseller = await sellerData.save();
@@ -233,7 +233,7 @@ export const sellerLogout = async (req, res, next) => {
             httpOnly: NODE_ENV === "production",
         });
 
-     res.json({ success : true , message: "user logged out" });
+     res.json({ success : true , message: "seller logged out" });
     } catch (error) {
         console.log(error);
 

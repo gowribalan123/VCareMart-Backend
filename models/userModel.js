@@ -21,10 +21,17 @@ const userSchema = new Schema(
         },
       
           
-       // phone: {
-        //    type: String,
-         //   required: true,
-      //  },
+       phone: {
+           type: String,
+        //  required: true,
+       },
+       dob:{
+        type:Date,
+
+       },
+       shippingaddress:{
+        type:String
+       },
         image: {
             type: String,
             default: "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg",

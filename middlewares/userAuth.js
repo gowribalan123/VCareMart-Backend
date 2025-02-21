@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 export const userAuth = (req, res, next) => {
     try {
-      const { token } = req.cookies;
+      const { token } = req.cookies.token;
       //const token = req.headers['authorization']?.split(' ')[1]; // Assuming Bearer token
 
         if (!token) {

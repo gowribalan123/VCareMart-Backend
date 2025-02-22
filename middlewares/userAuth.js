@@ -5,6 +5,7 @@ export const userAuth = (req, res, next) => {
         const { token } = req.cookies ;
         // Uncomment if you want to support Bearer tokens in headers
           //token = req.headers['authorization']?.split(' ')[1];
+    
         
         if (!token) {
             return res.status(401).json({ message: "User not authorized", success: false });

@@ -38,7 +38,7 @@ app.get('/test-cors', (req, res) => {
 });
 
 // Preflight requests
-app.options('*', cors());
+//app.options('*', cors());
 
 // API routes
 app.use("/api", apiRouter);

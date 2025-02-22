@@ -237,7 +237,7 @@ export const updateUserProfile = async (req, res, next) => {
         const userId = req.user.id; // Get user ID from the authenticated request  
 
         // Destructure the body, omitting profilepic for now  
-        const { name, email } = req.body;  
+        const { name,phone ,email,dob,shippingaddress,image} = req.body;  
 
         // Step 1: Find the user  
         const userData = await User.findById(userId);  
@@ -249,11 +249,12 @@ export const updateUserProfile = async (req, res, next) => {
         // Step 2: Prepare an update object  
         const updatedData = {  
             name: name || userData.name,  
-            email: email || userData.email,  
+           email: email || userData.email,  
             phone: phone || userData.phone,  
             dob: dob || userData.dob,  
             shippingaddress: shippingaddress || userData.shippingaddress,  
            // billingaddress: billingaddress || userData.billingaddress  
+           
         };  
 
         // Step 3: Handle image upload if a new one is provided  

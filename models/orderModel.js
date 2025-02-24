@@ -1,6 +1,6 @@
-import mongoose, { Schema }  from 'mongoose';
+import mongoose from 'mongoose';
 
-const orderSchema = new mongoose.Schema({  // Corrected: use mongoose.Schema
+const orderSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -23,11 +23,14 @@ const orderSchema = new mongoose.Schema({  // Corrected: use mongoose.Schema
                 required: true,
                 min: 0, // Ensure price is non-negative
             },
-           
+            quantity: {
+                type: Number,
+                required: true,
+                min: 1, // Ensure at least one item is ordered
+            },
         },
-    ]
-},{ timestamps: true }
-);  
+    ],
+}, { timestamps: true }); // Automatically manage createdAt and updatedAt fields
 
 export const Order = mongoose.model("Order", orderSchema);
 export default Order;

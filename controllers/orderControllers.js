@@ -1,200 +1,194 @@
 import { Cart } from "../models/cartModel.js";  
- 
 import { Product } from "../models/productModel.js";  
 import { sendError, sendSuccess } from '../utils/responseHandlers.js'; 
 import mongoose from 'mongoose';
 import Order from '../models/orderModel.js';
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
-
-//import asyncHandler from 'express-async-handler';
+import { validationResult } from 'express-validator'; // For validation
 
 const stripe = new Stripe(process.env.Stripe_Private_Api_Key);
 dotenv.config();
 
-// @desc  create a new order
-// @route GET /api/orders
-// @access PRIVATE
-export const addOrderItems = async (req, res) => {
-	const {
-		orderItems,
-		shippingAddress,
-		paymentMethod,
-		itemsPrice,
-		shippingPrice,
-		taxPrice,
-		totalPrice,
-	} = req.body;
-
-	if (orderItems && !orderItems.length) {
-		res.status(401);
-		throw new Error('No order items');
-	} else {
-		const order = new Order({
-			user: req.user._id,
-			orderItems,
-			shippingAddress,
-			paymentMethod,
-			itemsPrice,
-			shippingPrice,
-			taxPrice,
-			totalPrice,
-		});
-		const createdOrder = await order.save();
-		res.status(201).json(createdOrder);
-	}
+// Middleware to validate order data
+const validateOrderData = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    next();
 };
+
+// @desc  create a new order
+// @route POST /api/orders
+// @access PRIVATE
+export const addOrderItems = [validateOrderData, async (req, res) => {
+    try {
+        const {
+            orderItems,
+            shippingAddress,
+            paymentMethod,
+            itemsPrice,
+            shippingPrice,
+            taxPrice,
+            totalPrice,
+        } = req.body;
+
+        // Validate required fields
+        if (!orderItems || orderItems.length === 0) {
+            return sendError(res, 400, "No order items found.");
+        }
+
+        // Create a new order instance
+        const order = new Order({
+            userId: req.user._id, // Uncomment if user ID is available
+            sessionId: req.session.id,
+            products: orderItems.map(item => ({
+                productId: item.productId,
+                price: item.price,
+                quantity: item.quantity,
+            })),
+            shippingAddress,
+            paymentMethod,
+            itemsPrice,
+            shippingPrice,
+            taxPrice,
+            totalPrice,
+        });
+
+        // Save the order to the database
+        const savedOrder = await order.save();
+        return sendSuccess(res, 201, savedOrder);
+    } catch (error) {
+        console.error("Error adding order items:", error);
+        return sendError(res, 500, "Server error. Please try again.");
+    }
+}];
 
 // @desc  get an order by id
 // @route GET /api/orders/:id
 // @access PRIVATE
-export const getOrderById =  async (req, res) => {
-	const reqOrder = await Order.findById(req.params.id).populate(
-		'user',
-		'name email'
-	);
-	if (reqOrder) {
-		res.status(201).json(reqOrder);
-	} else {
-		res.status(401);
-		throw new Error('Order not found');
-	}
+export const getOrderById = async (req, res) => {
+    try {
+        const reqOrder = await Order.findById(req.params.id).populate('user', 'name email');
+        if (reqOrder) {
+            return sendSuccess(res, 200, reqOrder);
+        } else {
+            return sendError(res, 404, 'Order not found');
+        }
+    } catch (error) {
+        console.error("Error fetching order:", error);
+        return sendError(res, 500, "Server error. Please try again.");
+    }
 };
 
 // @desc  update the order object once paid
 // @route PUT /api/orders/:id/pay
 // @access PRIVATE
-export const updateOrderToPay =  async (req, res) => {
-	const order = await Order.findById(req.params.id);
-	if (order) {
-		const { paymentMode } = req.body;
-		order.isPaid = true;
-		order.paidAt = Date.now();
-		// update the payment result based on which mode of payment was chosen
-		if (paymentMode === 'paypal') {
-			order.paymentResult = {
-				type: 'paypal',
-				id: req.body.id,
-				status: req.body.status,
-				update_time: req.body.update_time,
-				email_address: req.body.payer.email_address,
-			};
-		} else if (paymentMode === 'stripe') {
-			order.paymentResult = {
-				type: 'stripe',
-				id: req.body.id,
-				status: req.body.status,
-				email_address: req.body.receipt_email,
-			};
-		}
+export const updateOrderToPay = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (order) {
+            const { paymentMode } = req.body;
+            order.isPaid = true;
+            order.paidAt = Date.now();
 
-		const updatedOrder = await order.save();
-		res.status(201).json(updatedOrder);
-	} else {
-		res.status(401);
-		throw new Error('Order not found');
-	}
+            // Update payment result based on the payment mode
+            order.paymentResult = {
+                type: paymentMode,
+                id: req.body.id,
+                status: req.body.status,
+                email_address: paymentMode === 'paypal' ? req.body.payer.email_address : req.body.receipt_email,
+            };
+
+            const updatedOrder = await order.save();
+            return sendSuccess(res, 200, updatedOrder);
+        } else {
+            return sendError(res, 404, 'Order not found');
+        }
+    } catch (error) {
+        console.error("Error updating order payment:", error);
+        return sendError(res, 500, "Server error. Please try again.");
+    }
 };
 
 // @desc  update the order object once delivered
-// @route PUT /api/orders/:id/pay
+// @route PUT /api/orders/:id/deliver
 // @access PRIVATE/ADMIN
-export const updateOrderToDeliver =  async (req, res) => {
-	const order = await Order.findById(req.params.id);
-	if (order) {
-		order.isDelivered = true;
-		order.deliveredAt = Date.now();
-
-		const updatedOrder = await order.save();
-		res.status(201).json(updatedOrder);
-	} else {
-		res.status(401);
-		throw new Error('Order not found');
-	}
+export const updateOrderToDeliver = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (order) {
+            order.isDelivered = true;
+            order.deliveredAt = Date.now();
+            const updatedOrder = await order.save();
+            return sendSuccess(res, 200, updatedOrder);
+        } else {
+            return sendError(res, 404, 'Order not found');
+        }
+    } catch (error) {
+        console.error("Error updating order delivery:", error);
+        return sendError(res, 500, "Server error. Please try again.");
+    }
 };
 
 // @desc  fetch the orders of the user logged in
 // @route GET /api/orders/myorders
 // @access PRIVATE
-export const getMyOrders =  async (req, res) => {
-	// sort orders in descending order of the date they were created at, hence negetive sign
-	const allOrders = await Order.find({ user: req.user._id }).sort(
-		'-createdAt'
-	);
-	res.json(allOrders);
+export const getMyOrders = async (req, res) => {
+    try {
+        const allOrders = await Order.find({ userId: req.user._id }).sort('-createdAt');
+        return sendSuccess(res, 200, allOrders);
+    } catch (error) {
+        console.error("Error fetching user orders:", error);
+        return sendError(res, 500, "Server error. Please try again.");
+    }
 };
 
 // @desc  fetch all orders
 // @route GET /api/orders
 // @access PRIVATE/ADMIN
 export const getAllOrders = async (req, res) => {
-	const page = Number(req.query.pageNumber) || 1; // the current page number in the pagination
-	const pageSize = 20; // total number of entries on a single page
+    try {
+        const page = Number(req.query.pageNumber) || 1;
+        const pageSize = 20;
 
-	const count = await Order.countDocuments({}); // total number of documents available
+        const count = await Order.countDocuments({});
+        const orders = await Order.find({})
+            .limit(pageSize)
+            .skip(pageSize * (page - 1))
+            .populate('user', 'id name')
+            .sort('-createdAt');
 
-	// find all orders that need to be sent for the current page, by skipping the documents included in the previous pages
-	// and limiting the number of documents included in this request
-	// sort this in desc order that the document was created at
-	const orders = await Order.find({})
-		.limit(pageSize)
-		.skip(pageSize * (page - 1))
-		.populate('user', 'id name')
-		.sort('-createdAt');
-
-	// send the list of orders, current page number, total number of pages available
-	res.json({
-		orders,
-		page,
-		pages: Math.ceil(count / pageSize),
-		total: count,
-	});
+        return sendSuccess(res, 200, {
+            orders,
+            page,
+            pages: Math.ceil(count / pageSize),
+            total: count,
+        });
+    } catch (error) {
+        console.error("Error fetching all orders:", error);
+        return sendError(res, 500, "Server error. Please try again.");
+    }
 };
 
 // @desc  create payment intent for stripe payment
 // @route POST /api/orders/stripe-payment
 // @access PUBLIC
 export const stripePayment = async (req, res) => {
-	const { price, email } = req.body;
+    try {
+        const { price, email } = req.body;
 
-	// Need to create a payment intent according to stripe docs
-	// https://stripe.com/docs/api/payment_intents
-	const paymentIntent = await stripe.paymentIntents.create({
-		amount: price,
-		currency: 'inr',
-		receipt_email: email,
-		payment_method_types: ['card'],
-	});
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: price,
+            currency: 'inr',
+            receipt_email: email,
+            payment_method_types: ['card'],
+        });
 
-	// send this payment intent to the client side
-	res.send({
-		clientSecret: paymentIntent.client_secret,
-	});
-
-	// another way to include payments, is to create a new charge for a new customer, each time
-	// similar to Hitesh's video on accepting stripe payments
-	// But uses out dated stripe technique, so excluded for the current implementation
-
-	// const { order, token } = req.body;
-	// const idempotencyKey = nanoid();
-	// return stripe.customers
-	// 	.create({
-	// 		email: token.email,
-	// 		source: token.id,
-	// 	})
-	// 	.then((customer) => {
-	// 		stripe.charges.create(
-	// 			{
-	// 				amount: order.totalPrice * 100,
-	// 				currency: 'inr',
-	// 				customer: customer.id,
-	// 				receipt_email: token.email,
-	// 				// description: product.name,
-	// 			},
-	// 			{ idempotencyKey }
-	// 		);
-	// 	})
-	// 	.then((result) => res.status(200).json(result))
-	// 	.catch((err) => console.log(err));
+        return sendSuccess(res, 200, { clientSecret: paymentIntent.client_secret });
+    } catch (error) {
+        console.error("Error creating Stripe payment intent:", error);
+        return sendError(res, 500, "Server error. Please try again.");
+    }
 };
-

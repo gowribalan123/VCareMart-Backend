@@ -2,6 +2,7 @@ import e from "express";
 import { userAuth } from "../middlewares/userAuth.js";
 import Stripe from "stripe";
 import { Order } from "../models/orderModel.js";
+import {Payment} from '../models/paymentModel.js';
 const router = e.Router();
 
 const stripe = new Stripe(process.env.Stripe_Private_Api_Key);
@@ -55,6 +56,29 @@ router.get("/session-status", async (req, res) => {
         });
     } catch (error) {
         res.status(error?.statusCode || 500).json(error.message || "internal server error");
+    }
+});
+
+// Create a new payment
+router.post("/createPayment", userAuth, async (req, res) => {
+    try {
+        const { userId, amount, paymentMethod, transactionId, shippingAddress } = req.body;
+
+        // Create a new payment record
+        const newPayment = new Payment({
+            userId,
+            amount,
+            paymentMethod,
+            status: 'completed', // Adjust based on your logic
+            transactionId,
+            shippingAddress,
+        });
+
+        await newPayment.save();
+        res.status(201).json({ success: true, payment: newPayment });
+    } catch (error) {
+        console.error('Error creating payment:', error);
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 

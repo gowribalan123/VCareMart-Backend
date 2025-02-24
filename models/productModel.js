@@ -63,12 +63,12 @@ seller: {
 
 subcategoryid: {  
     type: mongoose.Types.ObjectId,  
-    ref: "subcategory",  
+    ref: "SubCategory",  
     required: true,  
 }  ,
 categoryid: {  
     type: mongoose.Types.ObjectId,  
-    ref: "category",  
+    ref: "Category",  
     required: true,  
 }  ,
 

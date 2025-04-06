@@ -85,6 +85,7 @@ export const removeProductFromCart = async (req, res) => {
     }
 };
 
+
 export const updateQuantity = async (req, res) => {
     const { productId, quantity } = req.body;
 
@@ -107,5 +108,30 @@ export const updateQuantity = async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error', error });
+    }
+};
+export const clearCart = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Find the cart for the user
+        let cart = await Cart.findOne({ userId });
+        if (!cart) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+
+        // Clear all products from the cart
+        cart.products = []; // Empty the products array
+
+        // Optionally, recalculate total price if you have a method for that
+        cart.calculateTotalPrice(); // Ensure this method exists in your Cart model
+
+        // Save the updated cart
+        await cart.save();
+
+        res.status(200).json({ data: cart, message: "Cart is cleared" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error", error });
     }
 };

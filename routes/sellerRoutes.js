@@ -1,10 +1,12 @@
 import e from "express";
 import { sellerLogin, sellerLogout, sellerProfile, sellerSignup ,updateSellerProfile,sellerForgotPassword ,
-    sellerChangePassword,sellerAccountDeActivate,checkSeller,sellerAccountActivate,deleteSeller,
+    sellerChangePassword,sellerAccountDeActivate,checkSeller,sellerAccountActivate,deleteSeller,createProduct,
+    updateProduct,deleteProduct
     } from "../controllers/sellerControllers.js";
 
 import { sellerAuth } from "../middlewares/sellerAuth.js";
 
+import { upload } from "../middlewares/multer.js";
 import bcrypt from "bcrypt";
 import {Seller } from "../models/sellerModel.js";
 import { generateToken } from "../utils/token.js";
@@ -15,7 +17,7 @@ const router = e.Router();
 router.post("/signup", sellerSignup);
 
 //login
-router.put("/login", sellerLogin);
+router.post("/login", sellerLogin);
 
 //profile
 router.get("/profile", sellerAuth, sellerProfile);
@@ -42,16 +44,19 @@ router.get("/check-seller",sellerAuth, checkSeller);
  router.put("/account-activate", sellerAuth, sellerAccountActivate);
 
  //delete seller
- router.delete("/delete-seller", sellerAuth, deleteSeller);
+ router.delete("/delete", sellerAuth, deleteSeller);
 
  //add product
- //router.post("/products", sellerAuth, addProduct);
+router.post("/create-product", sellerAuth, upload.single('image'), createProduct);
+
+
+//update product
+router.put("/update-product/:productId",sellerAuth,upload.single('image'),updateProduct);
+
  
- //update product
- //router.put("/products/:productId", sellerAuth, updateProduct);
 
  //delete product
- //router.delete("/products/:productId", sellerAuth, deleteProduct);
+ router.delete("/products/:productId", sellerAuth, deleteProduct);
 
  //view orders
  //router.get("/orders", sellerAuth, viewOrders);

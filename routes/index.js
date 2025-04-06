@@ -3,7 +3,7 @@ import e  from "express";
 import {userRouter} from "./userRoutes.js";
 import {sellerRouter} from "./sellerRoutes.js";
 import {productRouter} from "./productRoutes.js";
-
+import { adminRouter } from "./adminRoutes.js";
 import {agegroupRouter} from "./agegroupRoutes.js";
 import {categoryRouter} from "./categoryRoutes.js";
 import {subcategoryRouter} from "./subcategoryRoutes.js";
@@ -17,6 +17,7 @@ const router=e.Router();
 
 router.use("/user",userRouter);
 router.use("/seller",sellerRouter);
+router.use("/admin",adminRouter);
 router.use("/product",productRouter);
 router.use("/order",orderRouter);
 router.use("/agegroup",agegroupRouter);

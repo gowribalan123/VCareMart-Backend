@@ -40,7 +40,10 @@ export const userSignup = async (req, res, next) => {
         }
 
         // Hash the password
-        const hashedPassword = bcrypt.hashSync(password, 10);
+       // const salt = await bcrypt.genSalt(10)
+       // const hashedPassword = await bcrypt.hash(password, salt)
+        
+       const hashedPassword = bcrypt.hashSync(password, 10);
 
         // Create a new user instance
         const userData = new User({ 
@@ -231,58 +234,58 @@ export const checkUser = async (req, res, next) => {
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
+};export const updateUserProfile = async (req, res, next) => {
+    try {
+        const userId = req.user.id; // Get user ID from the authenticated request
+        const { name, phone, email, dob, shippingaddress, image } = req.body;
+
+        // Step 1: Find the user
+        const userData = await User.findById(userId);
+        
+        if (!userData) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Step 2: Prepare an update object
+        const updatedData = {
+            name: name || userData.name,
+            email: email || userData.email,
+            phone: phone || userData.phone,
+            dob: dob || userData.dob,
+            shippingaddress: shippingaddress || userData.shippingaddress,
+            image: (typeof image === 'string' && image) ? image : userData.image, // Ensure image is a string
+        };
+
+        // Step 3: Handle image upload if a new one is provided
+        if (req.file) {
+            try {
+                const uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);
+                updatedData.image = uploadResult.url; // Set the profile pic URL in updatedData
+            } catch (uploadError) {
+                console.error("Error uploading image:", uploadError);
+                return res.status(500).json({ message: "Image upload failed" });
+            }
+        }
+
+        // Debugging log
+        console.log("Updated Data:", updatedData);
+
+        // Step 4: Update the user
+        const updatedUser = await User.findByIdAndUpdate(userId, { $set: updatedData }, { new: true, runValidators: true });
+        if (!updatedUser) {
+            return res.status(400).json({ message: "Update failed, user may not exist or data may be invalid" });
+        }
+
+        // Step 5: Prepare the response, excluding the password
+        const userResponse = updatedUser.toObject();
+        delete userResponse.password; // Ensure password is not sent back in the response
+
+        return res.json({ data: userResponse, message: "User profile updated successfully" });
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+    }
 };
-export const updateUserProfile = async (req, res, next) => {  
-    try {  
-        const userId = req.user.id; // Get user ID from the authenticated request  
-
-        // Destructure the body, omitting profilepic for now  
-        const { name,phone ,email,dob,shippingaddress,image} = req.body;  
-
-        // Step 1: Find the user  
-        const userData = await User.findById(userId);  
-
-        if (!userData) {  
-            return res.status(404).json({ message: "User not found" });  
-        }  
-
-        // Step 2: Prepare an update object  
-        const updatedData = {  
-            name: name || userData.name,  
-           email: email || userData.email,  
-            phone: phone || userData.phone,  
-            dob: dob || userData.dob,  
-            shippingaddress: shippingaddress || userData.shippingaddress,  
-           // billingaddress: billingaddress || userData.billingaddress  
-           
-        };  
-
-        // Step 3: Handle image upload if a new one is provided  
-        if (req.file) {  
-            try {  
-                const uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);  
-                updatedData.image = uploadResult.url; // Set the profile pic URL in updatedData  
-            } catch (uploadError) {  
-                console.error("Error uploading image:", uploadError);  
-                return res.status(500).json({ message: "Image upload failed" });  
-            }  
-        }  
-
-        // Step 4: Update the user  
-        const updatedUser = await User.findByIdAndUpdate(userId, updatedData, { new: true });  
-
-        // Step 5: Prepare the response, excluding the password  
-        const userResponse = updatedUser.toObject();  
-        delete userResponse.password; // Ensure password is not sent back in the response  
-
-        return res.json({ data: userResponse, message: "User profile updated successfully" });  
-    } catch (error) {  
-        console.error(error); // Log the error for debugging  
-        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });  
-    }  
-};
- 
-
 export const addToCart = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -456,3 +459,6 @@ export const deleteUser = async (req, res, next) => {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
+export const viewOrders = async(req,res,next)=>{
+    
+}

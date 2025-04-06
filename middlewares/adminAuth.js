@@ -6,8 +6,11 @@ import jwt from "jsonwebtoken";
 
 export const adminAuth = (req, res, next) => {
     try {
-        const { token } = req.cookies;
+       // const { token } = req.cookies;
+// Retrieve token from cookies or headers
+   // const token = req.cookies.token || req.headers['authorization']?.split(' ')[1];
 
+ const { token } = req.cookies;
         if (!token) {
             return res.status(401).json({ message: "admin not autherised", success: false });
         }
@@ -18,7 +21,7 @@ export const adminAuth = (req, res, next) => {
             return res.status(401).json({ message: "admin not autherised", success: false });
         }
         
-        if(tokenVerified.role != 'seller' && tokenVerified.role !='admin'){
+        if(tokenVerified.role !='admin'){
             return res.status(401).json({ message: "admin not autherised", success: false });
         }
 

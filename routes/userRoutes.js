@@ -1,6 +1,10 @@
 import e from "express";
-import { userLogin, userLogout, userProfile,updateUserProfile, userSignup, userforgotPassword,userchangePassword,userAccountDeActivate,checkUser,userAccountActivate,deleteUser,viewProducts ,addToCart , viewCart,checkOut,orderHistory} from "../controllers/userControllers.js";
+import { userLogin, userLogout, userProfile,updateUserProfile, userSignup,
+    userforgotPassword,userchangePassword,userAccountDeActivate,checkUser,
+    userAccountActivate,deleteUser,viewProducts ,addToCart , viewCart,checkOut,orderHistory,viewOrders 
+   } from "../controllers/userControllers.js";
 import { userAuth } from "../middlewares/userAuth.js";
+import { upload } from "../middlewares/multer.js";
 
 const router = e.Router();
 
@@ -14,7 +18,7 @@ router.post("/login", userLogin);
 router.get("/profile", userAuth, userProfile);
 
 //profile-update 
-router.post("/updateprofile", userAuth, updateUserProfile);
+router.put("/updateprofile",userAuth,upload.single('image'), updateUserProfile);
 //router.post("/updateprofile/:_id", userAuth, updateUserProfile);
 
 
@@ -52,5 +56,8 @@ router.put("/change-password", userAuth, userchangePassword);
    //order history
    router.get("/order", userAuth, orderHistory);
    
-   
+    //view orders
+ router.get("/orders", userAuth, viewOrders);
+
+ 
 export { router as userRouter };

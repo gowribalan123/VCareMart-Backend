@@ -5,6 +5,7 @@ const userSchema = new Schema(
         name: {
             type: String,
             required: true,
+            min:3,
             maxLength: 50,
         },
         email: {
@@ -27,15 +28,23 @@ const userSchema = new Schema(
        },
        dob:{
         type:Date,
-
+//  required: true,
        },
        shippingaddress:{
-        type:String
+        type:String,
+        //  required: true,
        },
-        image: {
-            type: String,
-            default: "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg",
-        },
+       image :  {
+                type: String,
+               
+                default: "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg",
+               
+                },
+                role: {
+                    type: String,
+                    enum: ["admin", "user"],
+                    default: "user"
+                },
         isActive: {
             type: Boolean,
             default: true,
@@ -47,3 +56,4 @@ const userSchema = new Schema(
 );
 
 export const User = mongoose.model("User", userSchema);
+ 

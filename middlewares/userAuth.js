@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 export const userAuth = (req, res, next) => {
     try {
         // Retrieve token from cookies or headers
-        const token = req.cookies.token || req.headers['authorization']?.split(' ')[1];
+        //const token = req.cookies.token || req.headers['authorization']?.split(' ')[1];
+        const { token } = req.cookies;
 
         // If you want to support localStorage, this part should be handled on the client-side
         // Local storage access is not available on the server-side

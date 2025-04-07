@@ -23,7 +23,7 @@ app.use(
     methods: ["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS"], // Allowed HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
    credentials: true, // Allow credentials
-  // withCredentials:true,
+   withCredentials:true,
   })
 );
 
@@ -41,7 +41,7 @@ app.get('/test-cors', (req, res) => {
 });
 
 // Preflight requests
-//app.options('*', cors());
+app.options('*', cors());
 
 // API routes
 app.use("/api", apiRouter);

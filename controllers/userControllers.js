@@ -96,7 +96,7 @@ export const userLogin = async (req, res, next) => {
         }
 
         const passwordMatch = bcrypt.compareSync(password, userExist.password);
-
+        console.log(password,userExist.password,passwordMatch);
         if (!passwordMatch) {
             return res.status(401).json({ message: "user not authenticated" });
         }
@@ -124,6 +124,7 @@ export const userProfile = async (req, res, next) => {
         const userId = req.user.id;
 
         const userData = await User.findById(userId).select("-password");
+    
         return res.json({ data: userData, message: "user profile fetched" });
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });

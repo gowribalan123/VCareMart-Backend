@@ -62,7 +62,7 @@ export const adminLogin = async (req, res, next) => {
         }
 
         const passwordMatch = bcrypt.compareSync(password, adminExist.password);
-
+     //   console.log(password,adminExist.password,passwordMatch);
         if (!passwordMatch) {
             return res.status(401).json({ message: "admin not authenticated" });
         }

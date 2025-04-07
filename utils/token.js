@@ -4,9 +4,9 @@ export const generateToken = (id, role) => {
     try {
         // Create the token with the user ID and role
         const token = jwt.sign({ id: id, role: role || "user" }, process.env.JWT_SECRET_KEY, 
-           // {
-          //  expiresIn: '1h' // Optional: Set expiration time
-//}
+           {
+           expiresIn: '30sec' // Optional: Set expiration time
+}
 );
         return token;
     } catch (error) {

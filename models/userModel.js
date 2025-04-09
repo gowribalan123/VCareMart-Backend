@@ -18,7 +18,7 @@ const userSchema = new Schema(
         password: {
             type: String,
             required: true,
-            minLength: 6,
+            minLength: 3,
         },
       
           
@@ -42,7 +42,7 @@ const userSchema = new Schema(
                 },
                 role: {
                     type: String,
-                    enum: ["admin", "user"],
+                    //enum: ["admin", "user"],
                     default: "user"
                 },
         isActive: {

@@ -40,10 +40,10 @@ router.put("/change-password", userAuth, userchangePassword);
  router.put("/account-activate", userAuth, userAccountActivate);
 
  //check-user
-  router.get("/check-user", userAuth,checkUser);
+ router.get("/check-user", userAuth,checkUser);
 
    //delete-user
-   router.delete("/delete",userAuth, deleteUser);
+   router.delete("/delete/:userId", deleteUser);
 
    // view Product
    router.get("/product",userAuth, viewProducts);

@@ -2,9 +2,10 @@ import { User } from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
 import { Product } from "../models/productModel.js";  
-import { cloudinaryInstance } from "../config/cloudinaryConfig.js";  
+import { cloudinaryInstance } from "../config/cloudinaryConfig.js"; 
+import mongoose from 'mongoose';
 
-const NODE_ENV = process.env.NODE_ENV;
+//const NODE_ENV = process.env.NODE_ENV;
 
  
 
@@ -61,25 +62,27 @@ export const userSignup = async (req, res, next) => {
         await userData.save();
 
         // Generate a token for the user
-        const token = generateToken(userData._id);
+       // const token = generateToken(userData._id);
 
         // Set cookie with the token
-        res.cookie("token", token, {
-            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
-            secure: process.env.NODE_ENV === "production",
-            httpOnly: true,
-        });
+       // res.cookie("token", token, {
+          //  sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+           // secure: process.env.NODE_ENV === "production",
+           // httpOnly: true,
+       // });
 
         // Exclude password from the response
         const userResponse = userData.toObject();
         delete userResponse.password;
 
-        return res.status(201).json({ data: userResponse, message: "User account created" });
-    } catch (error) {
-        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
-    }
-};
+        const token = generateToken(userData._id)
 
+        return res.status(200).json({ message: "Login succesfull", userResponse, token })
+    } catch (error) {
+        console.log(error);
+        res.status(error.status || 500).json({ error: error.message || "Internal server error" })
+    }
+}
 
 export const userLogin = async (req, res, next) => {
     try {
@@ -97,41 +100,59 @@ export const userLogin = async (req, res, next) => {
 
         const passwordMatch = bcrypt.compareSync(password, userExist.password);
         console.log(password,userExist.password,passwordMatch);
+
         if (!passwordMatch) {
             return res.status(401).json({ message: "user not authenticated" });
         }
 
-        const token = generateToken(userExist._id,'user');
-        //res.cookie("token", token);
+     //   const token = generateToken(userExist._id);
+    
 
-        res.cookie("token", token, {
-            sameSite: NODE_ENV === "production" ? "None" : "Lax",
-            secure: NODE_ENV === "production",
-            httpOnly: NODE_ENV === "production",
-        });  
+       // res.cookie("token", token, {
+          //  sameSite: NODE_ENV === "production" ? "None" : "Lax",
+           // secure: NODE_ENV === "production",
+          //  httpOnly: NODE_ENV === "production",
+       // });  
          // delete userExist._doc.password;
-         {
-            const { password, ...userDataWithoutPassword } = userExist._doc;
-            return res.json({ data: userDataWithoutPassword, message: "user login success" });
-        }
+
+         
+        const userObject = userExist.toObject()
+        delete userObject.password
+         //{
+          //  const { password, ...userDataWithoutPassword } = userExist._doc;
+          //  return res.json({ data: userDataWithoutPassword, message: "user login success" });
+
+          const token = generateToken(userExist._id)
+
+          return res.status(200).json({ message: "Login succesfull", userObject, token })
+       // }
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
+
 
 export const userProfile = async (req, res, next) => {
-    try {
-        const userId = req.user.id;
-
-        const userData = await User.findById(userId).select("-password");
-    
-        return res.json({ data: userData, message: "user profile fetched" });
-    } catch (error) {
-        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
-    }
+ 
+        try {
+            const userId = req.user.id;
+            const user = await User.findById(userId).select("-password")
+            return res.status(200).json(user)
+        } catch (error) {
+            console.log(error);
+            res.status(error.status || 500).json({ error: error.message || "Internal server error" })
+        }
 };
+
+
+
+
 export const userforgotPassword = async (req, res, next) => {
+
+
     try {
+
+        
         const { email } = req.body;
 
         const userData = await User.findOne({ email });
@@ -197,7 +218,14 @@ export const userAccountDeActivate = async (req, res, next) => {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
-
+export const checkUser = async (req, res, next) => {
+    try {
+       
+       return res.json({ message: "user autherized" });
+    } catch (error) {
+        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+    }
+};
 
 export const userAccountActivate = async (req, res, next) => {
     try {
@@ -220,22 +248,8 @@ export const userAccountActivate = async (req, res, next) => {
 
 
 
-export const checkUser = async (req, res, next) => {
-    try {
-        //const { email } = req.body;
 
-        //const userData = await User.findOne({ email });
-
-      //  if (!userData) {
-          //  return res.status(404).json({ message: "User not found" });
-      //  }
-
-       // return res.json({ message: "User exists" });
-       return res.json({ message: "user autherized" });
-    } catch (error) {
-        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
-    }
-};export const updateUserProfile = async (req, res, next) => {
+export const updateUserProfile = async (req, res, next) => {
     try {
         const userId = req.user.id; // Get user ID from the authenticated request
         const { name, phone, email, dob, shippingaddress, image } = req.body;
@@ -428,38 +442,39 @@ export const orderHistory = async (req, res) => {
 };
 export const userLogout = async (req, res, next) => {
     try { 
-      //  res.clearCookie("token");
-      res.clearCookie("token", {
-        sameSite: NODE_ENV === "production" ? "None" : "Lax",
-        secure: NODE_ENV === "production",
-        httpOnly: NODE_ENV === "production",
-    }); 
+     
+     // res.clearCookie("token", {
+     //   sameSite: NODE_ENV === "production" ? "None" : "Lax",
+     //   secure: NODE_ENV === "production",
+      //  httpOnly: NODE_ENV === "production",
+   // }); 
 
-        return res.json({ message: "user logout success" });
+        return res.json({ message: "user logout successful" });
     } catch (error) {
+        console.error("Logout error:", error); // Log the error for debugging
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
 
 
 
-export const deleteUser = async (req, res, next) => {
+
+export const deleteUser = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const { userId } = req.params
 
-        const userData = await User.findById(userId).select("-password");
-
-        if (!userData) {
-            return res.status(404).json({ message: "User not found" });
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "Invalid id" })
         }
 
-      await userData.remove();
-
-        return res.json({ message: "User account deleted successfully" });
+        await User.findByIdAndDelete(userId)
+        return res.status(200).json("User deleted successfully")
     } catch (error) {
-        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+        console.log(error);
+        res.status(error.status || 500).json({ error: error.message || "Internal server error" })
     }
-};
+}
+
 export const viewOrders = async(req,res,next)=>{
     
 }

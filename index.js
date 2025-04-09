@@ -10,8 +10,12 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000; // Use environment variable or default to 3000
 
-// Middleware
-app.use(express.json());
+
+
+// Connect to the database
+connectDB();
+
+
 app.use(cookieParser());
 
 // CORS configuration
@@ -25,10 +29,15 @@ app.use(
    credentials: true, // Allow credentials
    withCredentials:true,
   })
+
+
 );
 
-// Connect to the database
-connectDB();
+
+// Middleware
+
+app.use(express.json());  
+
 
 // Test endpoint
 app.get('/', (req, res) => {
@@ -41,7 +50,7 @@ app.get('/test-cors', (req, res) => {
 });
 
 // Preflight requests
-app.options('*', cors());
+//app.options('*', cors());
 
 // API routes
 app.use("/api", apiRouter);
@@ -50,6 +59,7 @@ app.use("/api", apiRouter);
 app.all("*", (req, res) => {
   return res.status(404).json({ message: "Endpoint does not exist" });
 });
+
 
 // Start the server
 app.listen(port, (err) => {

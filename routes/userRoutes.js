@@ -1,7 +1,7 @@
 import e from "express";
 import { userLogin, userLogout, userProfile,updateUserProfile, userSignup,
     userforgotPassword,userchangePassword,userAccountDeActivate,checkUser,
-    userAccountActivate,deleteUser,viewProducts ,addToCart , viewCart,checkOut,orderHistory,viewOrders 
+    userAccountActivate,deleteUser,viewProducts ,addToCart , viewCart,checkOut,orderHistory,viewOrders ,clearCart
    } from "../controllers/userControllers.js";
 import { userAuth } from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/multer.js";
@@ -55,7 +55,8 @@ router.put("/change-password", userAuth, userchangePassword);
   router.post("/checkout", userAuth, checkOut);
    //order history
    router.get("/order", userAuth, orderHistory);
-   
+   //clearcart
+   router.delete("/clear-cart",userAuth,clearCart);
     //view orders
  router.get("/orders", userAuth, viewOrders);
 

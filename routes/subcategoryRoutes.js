@@ -1,16 +1,17 @@
 import e from "express";
-import {  getAllsubCategory, createsubCategory,getsubCategoryDetails} from "../controllers/subcategoryControllers.js";
+import {  getAllSubCategory, createSubCategory,getSubCategoryDetails,getSubCategoryByCategory} from "../controllers/subcategoryControllers.js";
 
-import { sellerAuth } from "../middlewares/sellerAuth.js";
+import { userAuth } from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/multer.js";
 
 
 const router = e.Router();
 
  
-router.get("/get-all-subcategory", getAllsubCategory);
+router.get("/get-all-subcategory", getAllSubCategory);
 // create product
-router.post("/create-subcategory", sellerAuth, upload.single('image'), createsubCategory);
-router.get("/subcategory-details/:subcategoryId", getsubCategoryDetails);
+router.post("/create-subcategory", userAuth, upload.single('image'), createSubCategory);
+router.get("/get-subcategory-by-category", getSubCategoryByCategory);
+router.get("/subcategory-details/:subcategoryId", getSubCategoryDetails);
 
 export { router as subcategoryRouter };

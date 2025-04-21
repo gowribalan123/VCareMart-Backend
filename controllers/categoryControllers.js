@@ -1,63 +1,49 @@
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js";  
 import mongoose from 'mongoose';
 import {Category } from "../models/categoryModel.js";  
-
-// Create a new category  
-export const createCategory = async (req, res, next) => {  
-    try {  
+import { User } from "../models/userModel.js"; 
+export const createCategory = async (req, res, next) => {
+    try {
+        const { name, description, userId } = req.body;
         
-        // Ensure user is authenticated and get seller ID  
-        if (!req.seller || !req.seller.id) {  
-            console.log(req.seller);
-            return res.status(401).json({ message: 'User not authenticated' });  
-        }  
-    // Destructure fields from the request body  
+        // Check if user is authenticated
+        if (!userId) {
+            return res.status(401).json({ message: 'User is not authenticated' });
+        }
 
-        const { name, description,seller} = req.body;  
-        console.log("image====",req.file)
+        const userData = await User.findById(userId);
+        if (!userData) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-        
+        // Check for required fields
+        if (!name || !description || !userId) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
 
- 
-//req.file=image;
+        // Handle file upload to Cloudinary
+        if (!req.file) {
+            return res.status(400).json({ message: "File is required" });
+        }
 
-  // const { id } = req.user;
-        // Check if the required fields are present  
-        if (!name || !description ) {  
-            return res.status(400).json({ message: "All fields are required" });  
-        }  
-       const sellerId=req.seller.id;
-      //  console.log("Uploaded file:", req.file);  
-    
-        // Handle file upload to Cloudinary  
-        let uploadResult;  
-        if (req.file) {  
-            uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);  
-        //    console.log("Upload result:", uploadResult);  
-            
-        } else {  
-            return res.status(400).json({ message: "File is required" });  
-        }  
+        const uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);
 
-      //  console.log(sellerId)
-        // Create a new category  
-        const newCategory = new Category({  
-            name,  
-            description,  
-           
-            
-           image: uploadResult.url,  
-           //image,
-            seller:sellerId
-            // Correct usage of seller ID  
-        });  
-        const savedCategory = await newCategory.save();  
-        return res.status(201).json({ data: savedCategory, message: "Category created successfully" });  
-    } catch (error) {  
-        console.error("Error creating category:", error);  
-        return res.status(500).json({ message: "Internal server error" });  
-    }  
+        // Create a new category
+        const newCategory = new Category({
+            name,
+            description,
+            image: uploadResult.url,
+            seller: userId
+        });
+
+        const savedCategory = await newCategory.save();
+        return res.status(201).json({ data: savedCategory, message: "Category created successfully" });
+    } catch (error) {
+        console.error("Error creating category:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 };
+
 
 // Get all Categories
 export const getAllCategory = async (req, res) => {  

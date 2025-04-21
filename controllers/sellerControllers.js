@@ -4,7 +4,8 @@ import { generateToken } from "../utils/token.js";
 import { Product } from "../models/productModel.js";  
 import mongoose from "mongoose";
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js";  
-const NODE_ENV = process.env.NODE_ENV;
+
+//const NODE_ENV = process.env.NODE_ENV;
 
 
 
@@ -16,10 +17,10 @@ const NODE_ENV = process.env.NODE_ENV;
 // Seller Signup
 export const sellerSignup = async (req, res) => {
     try {
-        const { name, email, password, role, dob, noofproducts, shippingaddress, phone, created_at } = req.body;
+        const { name, email, password,  dob, noofproducts, shippingaddress, phone, created_at } = req.body;
 
         // Validate input fields
-        if (!name || !email || !password || !role || !dob || !noofproducts || !shippingaddress || !phone) {
+        if (!name || !email || !password || !dob || !noofproducts || !shippingaddress || !phone) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
@@ -35,21 +36,29 @@ export const sellerSignup = async (req, res) => {
         }
 
         const hashedPassword = bcrypt.hashSync(password, 10);
-        const sellerData = new Seller({ name, email, password: hashedPassword, role, dob, noofproducts, shippingaddress, phone, created_at });
+        const sellerData = new Seller({ name, email, password: hashedPassword,  dob, noofproducts, shippingaddress, phone, created_at });
         await sellerData.save();
  
-        const token = generateToken(sellerData._id);
-        res.cookie("token", token, {
-            sameSite: NODE_ENV === "production" ? "None" : "Lax",
-            secure: NODE_ENV === "production",
-            httpOnly: true,
-        });
+       // const token = generateToken(sellerData._id);
 
-        res.json({ success: true, message: "Seller account created" });
-    } catch (error) {
-        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
-    }
-};
+     //   res.cookie("token", token, {
+         //   sameSite: NODE_ENV === "production" ? "None" : "Lax",
+          //  secure: NODE_ENV === "production",
+           // httpOnly: true,
+       // });
+
+    // Exclude password from the response
+    const sellerResponse = sellerData.toObject();
+    delete sellerResponse.password;
+
+    const token = generateToken(sellerData._id)
+
+    return res.status(200).json({ message: "Seller Registration succesfull", sellerResponse, token })
+} catch (error) {
+    console.log(error);
+    res.status(error.status || 500).json({ error: error.message || "Internal server error" })
+}
+}
 
 // Seller Login
 export const sellerLogin = async (req, res) => {
@@ -73,34 +82,42 @@ const passwordMatch=bcrypt.compareSync(password,sellerExist.password);
         if (!passwordMatch) {
             return res.status(401).json({ message: "Seller not authenticated" });
         }
-//console.log(sellerExist.password);
-        const token = generateToken(sellerExist._id, 'seller');
-        res.cookie("token", token, {
-            sameSite: NODE_ENV === "production" ? "None" : "Lax",
-            secure: NODE_ENV === "production",
-            httpOnly: true,
-        });
+ 
+       
 
-        const { password: _, ...sellerDataWithoutPassword } = sellerExist._doc;
-        return res.json({ data: sellerDataWithoutPassword, message: "Seller login success" });
-    } catch (error) {
-        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
-    }
+       // res.cookie("token", token, {
+          //  sameSite: NODE_ENV === "production" ? "None" : "Lax",
+          //  secure: NODE_ENV === "production",
+          //  httpOnly: true,
+       // });
+
+       const sellerObject = sellerExist.toObject()
+       delete sellerObject.password
+        //{
+         //  const { password, ...userDataWithoutPassword } = userExist._doc;
+         //  return res.json({ data: userDataWithoutPassword, message: "user login success" });
+
+         const token = generateToken(sellerExist._id)
+
+         return res.status(200).json({ message: "Login succesfull", sellerObject, token })
+      // }
+   } catch (error) {
+       return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+   }
 };
 
-// Seller Profile
-export const sellerProfile = async (req, res) => {
-    try {
-        const sellerId = req.seller.id;
 
-     
-        const sellerData = await Seller.findById(sellerId).select("-password");
-      
-        return res.json({ data: sellerData, message: "Seller profile fetched" });
-        
-    } catch (error) {
-        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
-    }
+// Seller Profile
+export const sellerProfile = async (req, res,next) => {
+           try {
+              
+            const { email } = req.body;
+         // console.log(seller);
+                  const sellerData = await Seller.findOne({ email }).select("-password");
+                  return res.json({ data: sellerData , message: "Seller profile fetched" });
+              } catch (error) {
+                  return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+              }
 };
 
 // Seller Forgot Password

@@ -15,7 +15,7 @@ export const userSignup = async (req, res, next) => {
             name, 
             email, 
             password,
-            image,
+            image,role
          //   phone, 
          //   dob,
          //shippingaddress
@@ -54,8 +54,9 @@ export const userSignup = async (req, res, next) => {
           //  phone, 
           //  dob, 
           //shippingaddress
-        image
+        image,
          //  image: uploadResult.url,  
+         role
         });
 
         // Save user data to the database
@@ -77,60 +78,57 @@ export const userSignup = async (req, res, next) => {
 
         const token = generateToken(userData._id)
 
-        return res.status(200).json({ message: "Login succesfull", userResponse, token })
+        return res.status(200).json({ message: "Registration succesfull", userResponse, token })
     } catch (error) {
         console.log(error);
         res.status(error.status || 500).json({ error: error.message || "Internal server error" })
     }
 }
-
 export const userLogin = async (req, res, next) => {
     try {
+        const {role}=req.query;
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return res.status(400).json({ message: "all fields are required" });
+            return res.status(400).json({ message: "All fields are required" });
         }
 
-        const userExist = await User.findOne({ email });
-
-        if (!userExist) {
-            return res.status(404).json({ message: "user does not exist" });
-        }
+        const userExist = await User.findOne({ email,role});
+                        //console.log(userExist)   ;                                           
+ 
+       if (!userExist) {
+          return res.status(404).json({ message: "User does not exist" });
+       }
 
         const passwordMatch = bcrypt.compareSync(password, userExist.password);
-        console.log(password,userExist.password,passwordMatch);
+        console.log(password, userExist.password, passwordMatch);
 
         if (!passwordMatch) {
-            return res.status(401).json({ message: "user not authenticated" });
+            return res.status(401).json({ message: "User not authenticated" });
         }
 
-     //   const token = generateToken(userExist._id);
-    
 
-       // res.cookie("token", token, {
-          //  sameSite: NODE_ENV === "production" ? "None" : "Lax",
-           // secure: NODE_ENV === "production",
-          //  httpOnly: NODE_ENV === "production",
-       // });  
-         // delete userExist._doc.password;
+         // Check user role
+         const userRole = userExist.role; // Assuming 'role' is a field in your User model
+         console.log("User Role:", userRole);
+                                              
+       
+        const token = generateToken(userExist._id);
 
-         
-        const userObject = userExist.toObject()
-        delete userObject.password
-         //{
-          //  const { password, ...userDataWithoutPassword } = userExist._doc;
-          //  return res.json({ data: userDataWithoutPassword, message: "user login success" });
+        // Optionally, you can include the role in the response
+        const userObject = userExist.toObject();
+        delete userObject.password;
 
-          const token = generateToken(userExist._id)
-
-          return res.status(200).json({ message: "Login succesfull", userObject, token })
-       // }
+        return res.status(200).json({ 
+            message: "Login successful", 
+            userObject, 
+            token, 
+            role: userRole // Include user role in the response
+        });
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
-
 
 export const userProfile = async (req, res, next) => {
  
@@ -245,6 +243,33 @@ export const userAccountActivate = async (req, res, next) => {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
+
+export const clearCart = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Find the cart for the user
+        let cart = await Cart.findOne({ userId });
+        if (!cart) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+
+        // Clear all products from the cart
+        cart.products = []; // Empty the products array
+
+        // Optionally, recalculate total price if you have a method for that
+        cart.calculateTotalPrice(); // Ensure this method exists in your Cart model
+
+        // Save the updated cart
+        await cart.save();
+
+        res.status(200).json({ data: cart, message: "Cart is cleared" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error", error });
+    }
+};
+
 
 
 

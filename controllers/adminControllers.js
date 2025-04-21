@@ -86,7 +86,7 @@ export const adminProfile = async (req, res, next) => {
     const { admin } =req;
 
         const adminData = await Admin.findById(admin.id).select("-password");
-        return res.json({ data: adminData , message: "Admin profile fetched" ,adminData});
+        return res.json({ data: adminData , message: "Admin profile fetched"        });
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }

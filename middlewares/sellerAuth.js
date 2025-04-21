@@ -10,19 +10,20 @@ export const sellerAuth = (req, res, next) => {
 // Retrieve token from cookies or headers
    // const token = req.cookies.token || req.headers['authorization']?.split(' ')[1];
 
- const { token } = req.cookies;
+ //const { token } = req.cookies;
+ const token =  req.headers['authorization']?.split(' ')[1] || req.cookies.token ;
         if (!token) {
-            return res.status(401).json({ message: "seller not autherised , Please login.", success: false });
+            return res.status(401).json({ message: "seller  not autherised , Please login.", success: false });
         }
 
         const tokenVerified = jwt.verify(token, process.env.JWT_SECRET_KEY);
         
         if (!tokenVerified) {
-            return res.status(401).json({ message: "seller not autherised", success: false });
+            return res.status(401).json({ message: "seller   not autherised", success: false });
         }
         
         if(tokenVerified.role != 'seller' ){
-            return res.status(401).json({ message: "seller not autherised", success: false });
+            return res.status(401).json({ message: "seller is not autherised", success: false });
         }
 
         req.seller = tokenVerified;

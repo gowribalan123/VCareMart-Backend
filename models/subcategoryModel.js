@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";  
 
 const subcategorySchema = new Schema({  
-   
     name: {  
         type: String,  
         required: true,  
@@ -12,24 +11,25 @@ const subcategorySchema = new Schema({
     description: {  
         type: String,  
         required: true,  
-        minLength: 20,  
+        minLength: 10,  
         maxLength: 300,  
     },  
-    category_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Category", // Reference to the Category model
+    categoryId: {
+        type: mongoose.Types.ObjectId,
+        ref: "Category",
         required: true,
-      },
-   
+        index: true, // Index for faster queries
+    },
     image: {
         type: String,
         default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaLGtEd0MJro4X9wDmT2vrvLT-HjKkyyWVmg&s",
-    }
-, 
-//seller: { type: mongoose.Types.ObjectId, ref: "Seller" },
-//category: { type: mongoose.Types.ObjectId, ref: "Category"},
-}, 
-{ timestamps: true }
-);  
+    },
+    seller: { 
+        type: mongoose.Types.ObjectId, 
+        ref: "User",
+       
+    },
+},
+{ timestamps: true });  
 
 export const SubCategory = mongoose.model("SubCategory", subcategorySchema);

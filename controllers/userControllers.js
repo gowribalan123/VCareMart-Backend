@@ -86,15 +86,16 @@ export const userSignup = async (req, res, next) => {
 }
 export const userLogin = async (req, res, next) => {
     try {
-        const {role}=req.query;
+       // const {role}=req.query;
         const { email, password } = req.body;
 
         if (!email || !password) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        const userExist = await User.findOne({ email,role});
-                        //console.log(userExist)   ;                                           
+        const userExist = await User.findOne({email });
+      //  const userExist = await User.findOne({email ,role});
+                      //  console.log(userExist.email)   ;                                           
  
        if (!userExist) {
           return res.status(404).json({ message: "User does not exist" });

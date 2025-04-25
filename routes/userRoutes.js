@@ -47,7 +47,7 @@ router.put("/change-password", userAuth, userchangePassword);
  router.put("/account-activate", userAuth, userAccountActivate);
 
  //check-user
- router.get("/check-user", userAuth,checkUser);
+ router.get("/check-user", userAuth,checkUser,checkSeller);
 
    //delete-user
    router.delete("/delete/:userId", deleteUser);

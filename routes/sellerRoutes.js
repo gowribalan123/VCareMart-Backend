@@ -4,7 +4,7 @@ import { sellerLogin, sellerLogout, sellerProfile, sellerSignup ,updateSellerPro
     updateProduct,deleteProduct
     } from "../controllers/sellerControllers.js";
 
-import { sellerAuth } from "../middlewares/sellerAuth.js";
+import { userAuth } from "../middlewares/userAuth.js";
 
 import { upload } from "../middlewares/multer.js";
 import bcrypt from "bcrypt";
@@ -20,43 +20,43 @@ router.post("/signup", sellerSignup);
 router.post("/login", sellerLogin);
 
 //profile
-router.get("/profile", sellerAuth, sellerProfile);
+router.get("/profile", userAuth, sellerProfile);
 
 //logout
-router.get("/logout", sellerAuth, sellerLogout);
+router.get("/logout", userAuth, sellerLogout);
 
 //profile-update
-router.post("/updateprofile", sellerAuth, updateSellerProfile);
+router.post("/updateprofile", userAuth, updateSellerProfile);
 
 //forgot-password
 router.post("/forgot-password", sellerForgotPassword);
 
 //change-password
-router.put("/change-password", sellerAuth, sellerChangePassword);
+router.put("/change-password", userAuth, sellerChangePassword);
 
 //account-deactivate
-router.put("/account-deactivate", sellerAuth, sellerAccountDeActivate);
+router.put("/account-deactivate", userAuth, sellerAccountDeActivate);
 
 //check-seller
-router.get("/check-seller",sellerAuth, checkSeller);
+router.get("/check-seller",userAuth, checkSeller);
  
 //account-activate
- router.put("/account-activate", sellerAuth, sellerAccountActivate);
+ router.put("/account-activate", userAuth, sellerAccountActivate);
 
  //delete seller
- router.delete("/delete", sellerAuth, deleteSeller);
+ router.delete("/delete", userAuth, deleteSeller);
 
  //add product
-router.post("/create-product", sellerAuth, upload.single('image'), createProduct);
+router.post("/create-product", userAuth, upload.single('image'), createProduct);
 
 
 //update product
-router.put("/update-product/:productId",sellerAuth,upload.single('image'),updateProduct);
+router.put("/update-product/:productId",userAuth,upload.single('image'),updateProduct);
 
  
 
  //delete product
- router.delete("/products/:productId", sellerAuth, deleteProduct);
+ router.delete("/products/:productId", userAuth, deleteProduct);
 
  //view orders
  //router.get("/orders", sellerAuth, viewOrders);

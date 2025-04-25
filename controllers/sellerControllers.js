@@ -1,4 +1,4 @@
-import { Seller } from "../models/sellerModel.js";
+import { User } from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
 import { Product } from "../models/productModel.js";  
@@ -69,7 +69,7 @@ export const sellerLogin = async (req, res) => {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        const sellerExist = await Seller.findOne({ email });
+        const sellerExist = await User.findOne({ email });
         if (!sellerExist) {
             return res.status(404).json({ message: "Seller does not exist" });
         }

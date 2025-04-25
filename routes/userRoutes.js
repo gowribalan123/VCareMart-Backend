@@ -3,19 +3,26 @@ import { userLogin, userLogout, userProfile,updateUserProfile, userSignup,
     userforgotPassword,userchangePassword,userAccountDeActivate,checkUser,
     userAccountActivate,deleteUser,viewProducts ,addToCart , viewCart,checkOut,orderHistory,viewOrders ,clearCart
    } from "../controllers/userControllers.js";
+
+   import { sellerLogin, sellerLogout, sellerProfile, sellerSignup ,updateSellerProfile,sellerForgotPassword ,
+       sellerChangePassword,sellerAccountDeActivate,checkSeller,sellerAccountActivate,deleteSeller,createProduct,
+       updateProduct,deleteProduct
+       } from "../controllers/sellerControllers.js";
+
+       
 import { userAuth } from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/multer.js";
 
 const router = e.Router();
 
 //signup
-router.post("/signup", userSignup);
+router.post("/signup", userSignup,sellerSignup);
 
 //login
-router.post("/login", userLogin);
+router.post("/login", userLogin,sellerLogin);
 
 //profile
-router.get("/profile", userAuth, userProfile);
+router.get("/profile", userAuth, userProfile,sellerProfile);
 
 //profile-update 
 router.put("/updateprofile",userAuth,upload.single('image'), updateUserProfile);

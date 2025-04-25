@@ -1,68 +1,61 @@
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js";  
 import mongoose from 'mongoose';
 import { Product } from "../models/productModel.js";  
+import { User } from "../models/userModel.js";  // Ensure User model is imported
 import { Category } from "../models/categoryModel.js";  
 import { SubCategory } from "../models/subcategoryModel.js";  
-
-
 
 // Create a new product  
 export const createProduct = async (req, res, next) => {  
     try {  
-        
-        // Ensure user is authenticated and get seller ID  
-        if (!req.seller || !req.seller.id) {  
-             
-            return res.status(401).json({ message: 'User not authenticated' });  
-        }  
-    // Destructure fields from the request body  
-
-        const { name, description, categoryid ,subcategoryid, age_group,size, color, price, stock, weight, rating,seller} = req.body;  
        
 
-        
+        // Destructure fields from the request body  
+        const { name, description, categoryid,  subcategoryid, age_group, size, color, price, stock, weight, rating, userID } = req.body;  
 
- 
-//req.file=image;
+       // Validate subcategoryId
+             if (!mongoose.Types.ObjectId.isValid(subcategoryid)) {
+                 return res.status(400).json({ message: "Invalid subcategory ID" });
+             }
+           const userData = await User.findById(userID);
+             const subcategoryData= await SubCategory.findById(subcategoryid);
+             const categoryData=await Category.findById(categoryid);
+             
+             if (!userID || !userData) {  
+                 return res.status(401).json({ message: 'User not authenticated or not found' });  
+             }  
 
-  // const { id } = req.user;
         // Check if the required fields are present  
-        if (!name || !description ||!categoryid|| !subcategoryid || !age_group || !size|| !color || !price || !stock ||!weight || !rating) {  
+        if (!name || !description || !subcategoryid || !categoryid ||   !age_group || !size || !color || !price || !stock || !weight || !rating) {  
             return res.status(400).json({ message: "All fields are required" });  
         }  
-       const sellerId=req.seller.id;
-    
-    
-        // Handle file upload to Cloudinary  
-        let uploadResult;  
-        if (req.file) {  
-            uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);  
-            console.log("Upload result:", uploadResult);  
-            
-        } else {  
-            return res.status(400).json({ message: "File is required" });  
-        }  
 
-         
+        // Handle file upload to Cloudinary  
+        if (!req.file) {  
+            return res.status(400).json({ message: "File is required" });  
+        }
+
+        const uploadResult = await cloudinaryInstance.uploader.upload(req.file.path);  
+        console.log("Upload result:", uploadResult);  
+
         // Create a new product  
         const newProduct = new Product({  
             name,  
             description,  
-            categoryid,
-            subcategoryid,
-            age_group,
+           categoryid:categoryData._id,  
+            subcategoryid:subcategoryData._id,  
+            age_group,  
             size,  
             color,  
             price,  
             stock,  
             weight,  
             rating,  
+            image: uploadResult.url,  
             
-           image: uploadResult.url,  
-           //image,
-            seller:sellerId
-            // Correct usage of seller ID  
+            seller: userData._id 
         });  
+
         const savedProduct = await newProduct.save();  
         return res.status(201).json({ data: savedProduct, message: "Product created successfully" });  
     } catch (error) {  
@@ -208,7 +201,7 @@ export const getProductByCategory = async (req, res) => {
     try {
         // Ensure categoryid is provided in the request parameters
         const { categoryid } = req.params;
-
+      console.log(categoryid);
         if (!categoryid) {
             return res.status(400).json({ message: "category ID is required" });
         }

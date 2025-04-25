@@ -1,7 +1,7 @@
 import e from "express";
 import { getProductDetails, getAllProducts, createProduct, deleteProduct,updateProduct ,getProductByCategory,getProductBySubCategory} from "../controllers/productControllers.js";
 
-import { sellerAuth } from "../middlewares/sellerAuth.js";
+import { userAuth } from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/multer.js";
 
 
@@ -13,8 +13,9 @@ router.get("/get-product-by-subcategory/:subcategoryid",getProductBySubCategory)
 router.get("/get-product-by-category/:categoryid",getProductByCategory);
 router.get("/get-all-products", getAllProducts);
 // create product
-router.post("/create-product", sellerAuth, upload.single('image'), createProduct);
-router.put("/update-product/:productId",sellerAuth,upload.single('image'),updateProduct);
+
+router.post("/create-product", userAuth, upload.single('image'), createProduct);
+router.put("/update-product/:productId",userAuth,upload.single('image'),updateProduct);
 router.delete("/delete-product/:productId",deleteProduct);
 
 

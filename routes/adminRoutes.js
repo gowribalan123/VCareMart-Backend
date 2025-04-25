@@ -6,7 +6,7 @@ import {adminLogin, adminLogout, adminProfile, adminSignup,adminForgotPassword ,
     adminChangePassword,userAccountDeActivate,checkAdmin,userAccountActivate,deleteAdmin,createCategory
     } from "../controllers/adminControllers.js";
 
-import { adminAuth } from "../middlewares/adminAuth.js";
+import { userAuth } from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/multer.js";
 
 import bcrypt from "bcrypt";
@@ -22,10 +22,10 @@ router.post("/signup", adminSignup);
 router.post("/login", adminLogin);
 
 //profile
-router.get("/profile", adminAuth, adminProfile);
+router.get("/profile", userAuth, adminProfile);
 
 //logout
-router.get("/logout", adminAuth, adminLogout);
+router.get("/logout", userAuth, adminLogout);
 
 //profile-update
 //router.post("/updateprofile", adminAuth, updateAdminProfile);
@@ -34,22 +34,22 @@ router.get("/logout", adminAuth, adminLogout);
 router.post("/forgot-password", adminForgotPassword);
 
 //change-password
-router.put("/change-password", adminAuth, adminChangePassword);
+router.put("/change-password", userAuth, adminChangePassword);
 
 //account-deactivate
-router.put("/account-deactivate", adminAuth, userAccountDeActivate);
+router.put("/account-deactivate", userAuth, userAccountDeActivate);
 
 //check-admin
-router.get("/check-admin",adminAuth, checkAdmin);
+router.get("/check-admin",userAuth, checkAdmin);
  
 //account-activate
- router.put("/account-activate", adminAuth, userAccountActivate);
+ router.put("/account-activate", userAuth, userAccountActivate);
 
  //delete admin
- router.delete("/delete", adminAuth, deleteAdmin);
+ router.delete("/delete", userAuth, deleteAdmin);
 
  //create category
- router.post("/create-category",adminAuth, upload.single('image'),createCategory);
+ router.post("/create-category",userAuth, upload.single('image'),createCategory);
  //add product
  //router.post("/products", adminAuth, addProduct);
  

@@ -58,7 +58,7 @@ const productSchema = new Schema({
 , 
 seller: { 
     type: mongoose.Types.ObjectId,
-     ref: "Seller" 
+     ref: "User" 
     },
 
 subcategoryid: {  

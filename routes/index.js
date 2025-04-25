@@ -16,7 +16,7 @@ import {paymentRouter} from "./paymentRoutes.js";
 const router=e.Router();
 
 router.use("/user",userRouter);
-router.use("/seller",userRouter);
+//router.use("/seller",userRouter);
 router.use("/admin",userRouter);
 router.use("/product",productRouter);
 router.use("/order",orderRouter);

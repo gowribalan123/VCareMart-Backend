@@ -4,10 +4,7 @@ import { userLogin, userLogout, userProfile,updateUserProfile, userSignup,
     userAccountActivate,deleteUser,viewProducts ,addToCart , viewCart,checkOut,orderHistory,viewOrders ,clearCart
    } from "../controllers/userControllers.js";
 
-   import { sellerLogin, sellerLogout, sellerProfile, sellerSignup ,updateSellerProfile,sellerForgotPassword ,
-       sellerChangePassword,sellerAccountDeActivate,checkSeller,sellerAccountActivate,deleteSeller,createProduct,
-       updateProduct,deleteProduct
-       } from "../controllers/sellerControllers.js";
+ 
 
        
 import { userAuth } from "../middlewares/userAuth.js";
@@ -16,13 +13,13 @@ import { upload } from "../middlewares/multer.js";
 const router = e.Router();
 
 //signup
-router.post("/signup", userSignup,sellerSignup);
+router.post("/signup", userSignup);
 
 //login
-router.post("/login", userLogin,sellerLogin);
+router.post("/login", userLogin);
 
 //profile
-router.get("/profile", userAuth, userProfile,sellerProfile);
+router.get("/profile", userAuth, userProfile);
 
 //profile-update 
 router.put("/updateprofile",userAuth,upload.single('image'), updateUserProfile);
@@ -47,7 +44,7 @@ router.put("/change-password", userAuth, userchangePassword);
  router.put("/account-activate", userAuth, userAccountActivate);
 
  //check-user
- router.get("/check-user", userAuth,checkUser,checkSeller);
+ router.get("/check-user", userAuth,checkUser);
 
    //delete-user
    router.delete("/delete/:userId", deleteUser);

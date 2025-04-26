@@ -21,7 +21,7 @@ export const sellerSignup = async (req, res) => {
         const { name, email, password,  dob, noofproducts, shippingaddress, phone, created_at } = req.body;
 
         // Validate input fields
-        if (!name || !email || !password || !dob || !noofproducts || !shippingaddress || !phone) {
+        if (!name || !email || !password ) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
@@ -37,7 +37,7 @@ export const sellerSignup = async (req, res) => {
         }
 
         const hashedPassword = bcrypt.hashSync(password, 10);
-        const sellerData = new Seller({ name, email, password: hashedPassword,  dob, noofproducts, shippingaddress, phone, created_at });
+        const sellerData = new Seller({ name, email, password: hashedPassword,   created_at });
         await sellerData.save();
  
        // const token = generateToken(sellerData._id);

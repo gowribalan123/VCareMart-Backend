@@ -1,4 +1,5 @@
 import { User } from "../models/userModel.js";
+import {Seller } from "../models/sellerModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
 import { Product } from "../models/productModel.js";  
@@ -132,6 +133,54 @@ export const userLogin = async (req, res, next) => {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
+
+
+// Seller Login
+export const sellerLogin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+ 
+        if (!email || !password) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        const sellerExist = await Seller.findOne({ email });
+        if (!sellerExist) {
+            return res.status(404).json({ message: "Seller does not exist" });
+        }
+        
+        
+       // console.log(sellerExist,password);
+            // const passwordMatch = bcrypt.compareSync(password, sellerExist.password);
+const passwordMatch=bcrypt.compareSync(password,sellerExist.password);
+        console.log(password,sellerExist.password,passwordMatch);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: "Seller not authenticated" });
+        }
+ 
+       
+
+       // res.cookie("token", token, {
+          //  sameSite: NODE_ENV === "production" ? "None" : "Lax",
+          //  secure: NODE_ENV === "production",
+          //  httpOnly: true,
+       // });
+
+       const sellerObject = sellerExist.toObject()
+       delete sellerObject.password
+        //{
+         //  const { password, ...userDataWithoutPassword } = userExist._doc;
+         //  return res.json({ data: userDataWithoutPassword, message: "user login success" });
+
+         const token = generateToken(sellerExist._id)
+
+         return res.status(200).json({ message: "Login succesfull", sellerObject, token })
+      // }
+   } catch (error) {
+       return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+   }
+};
+
 // Get all Categories
 export const getAllCategory = async (req, res) => {  
     try {  

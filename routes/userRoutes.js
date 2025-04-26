@@ -2,7 +2,7 @@ import e from "express";
 import { userLogin, userLogout, userProfile,updateUserProfile, userSignup,
     userforgotPassword,userchangePassword,userAccountDeActivate,checkUser,
     userAccountActivate,deleteUser,viewProducts ,addToCart , viewCart,checkOut,orderHistory,viewOrders ,clearCart
-    ,getAllCategory
+    ,getAllCategory,sellerLogin
    } from "../controllers/userControllers.js";
 
  
@@ -17,7 +17,7 @@ const router = e.Router();
 router.post("/signup", userSignup);
 
 //login
-router.post("/login", userLogin);
+router.post("/login", userLogin,sellerLogin);
 
 //profile
 router.get("/profile", userAuth, userProfile);

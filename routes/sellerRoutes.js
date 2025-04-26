@@ -7,10 +7,8 @@ import { sellerLogin, sellerLogout, sellerProfile, sellerSignup ,updateSellerPro
 import {userAuth } from "../middlewares/userAuth.js";
 import {sellerAuth } from "../middlewares/sellerAuth.js";
 import { upload } from "../middlewares/multer.js";
-import bcrypt from "bcrypt";
-import {User } from "../models/userModel.js";
-import {Seller } from "../models/sellerModel.js";
-import { generateToken } from "../utils/token.js";
+ 
+ 
 
 const router = e.Router();
 
@@ -21,7 +19,7 @@ router.post("/signup", sellerSignup);
 router.post("/login", sellerLogin);
 
 //profile
-router.get("/profile",sellerAuth, sellerProfile);
+router.get("/profile",userAuth, sellerProfile);
 
 //logout
 router.get("/logout",userAuth, sellerLogout);
@@ -39,7 +37,7 @@ router.put("/change-password",userAuth, sellerChangePassword);
 router.put("/account-deactivate",userAuth, sellerAccountDeActivate);
 
 //check-seller
-router.get("/check-seller",sellerAuth, checkSeller);
+router.get("/check-seller",userAuth, checkSeller);
  
 //account-activate
  router.put("/account-activate",userAuth, sellerAccountActivate);

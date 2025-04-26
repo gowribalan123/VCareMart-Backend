@@ -2,7 +2,7 @@ import e from "express";
 import { userLogin, userLogout, userProfile,updateUserProfile, userSignup,
     userforgotPassword,userchangePassword,userAccountDeActivate,checkUser,
     userAccountActivate,deleteUser,viewProducts ,addToCart , viewCart,checkOut,orderHistory,viewOrders ,clearCart
-    ,getAllCategory,sellerLogin,sellerProfile
+    ,getAllCategory
    } from "../controllers/userControllers.js";
 
  
@@ -10,7 +10,7 @@ import { userLogin, userLogout, userProfile,updateUserProfile, userSignup,
        
 import { userAuth } from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/multer.js";
-import { checkUser } from "../controllers/userControllers.js";
+ 
 
 const router = e.Router();
 
@@ -19,12 +19,10 @@ router.post("/signup", userSignup);
 
 //login
 router.post("/login", userLogin);
-//seller login
-router.post("/login", sellerLogin);
+ 
 //profile
 router.get("/profile", userAuth, userProfile);
-// seller profile
-router.get("/profile", userAuth, sellerProfile);
+ 
 //profile-update 
 router.put("/updateprofile",userAuth,upload.single('image'), updateUserProfile);
 //router.post("/updateprofile/:_id", userAuth, updateUserProfile);
@@ -51,8 +49,7 @@ router.put("/change-password", userAuth, userchangePassword);
 
  //check-user
  router.get("/check-user", userAuth,checkUser);
- //check-seller
- router.get("/check-user", userAuth,checkSeller);
+ 
    //delete-user
    router.delete("/delete/:userId", deleteUser);
 

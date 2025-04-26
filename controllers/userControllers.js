@@ -2,6 +2,7 @@ import { User } from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/token.js";
 import { Product } from "../models/productModel.js";  
+import { Category } from "../models/categoryModel.js"; 
 import { cloudinaryInstance } from "../config/cloudinaryConfig.js"; 
 import mongoose from 'mongoose';
 
@@ -131,6 +132,16 @@ export const userLogin = async (req, res, next) => {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }
 };
+// Get all Categories
+export const getAllCategory = async (req, res) => {  
+    try {  
+        const category = await Category.find();  
+        return res.json({ data: category, message: "Category fetched successfully" });  
+    } catch (error) {  
+        console.error("Error fetching categories:", error);  
+        return res.status(500).json({ message: "Internal server error" });  
+    }  
+};  
 
 export const userProfile = async (req, res, next) => {
  

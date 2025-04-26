@@ -565,3 +565,23 @@ export const deleteUser = async (req, res) => {
 export const viewOrders = async(req,res,next)=>{
     
 }
+// Seller Profile
+export const sellerProfile = async (req, res,next) => {
+           try {
+              
+            const { email } = req.body;
+         // console.log(seller);
+                  const sellerData = await Seller.findOne({ email }).select("-password");
+                  return res.json({ data: sellerData , message: "Seller profile fetched" });
+              } catch (error) {
+                  return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+              }
+};
+// Check Seller Authorization
+export const checkSeller = async (req, res) => {
+    try {
+        res.json({ success: true, message: "Seller authorized" });
+    } catch (error) {
+        return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
+    }
+};

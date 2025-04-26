@@ -16,7 +16,7 @@ const router = e.Router();
 router.post("/signup", sellerSignup);
 
 //login
-router.post("/login", sellerLogin);
+router.post("/login",userAuth, sellerLogin);
 
 //profile
 router.get("/profile",userAuth, sellerProfile);

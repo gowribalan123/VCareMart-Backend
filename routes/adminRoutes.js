@@ -5,11 +5,12 @@ import e from "express";
 import {adminLogin, adminLogout, adminProfile, adminSignup,adminForgotPassword ,
     adminChangePassword,userAccountDeActivate,checkAdmin,userAccountActivate,deleteAdmin,createCategory
     } from "../controllers/adminControllers.js";
-
+ 
 import { userAuth } from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/multer.js";
 
 import bcrypt from "bcrypt";
+import {User } from "../models/userModel.js";
 import {Admin } from "../models/adminModel.js";
 import { generateToken } from "../utils/token.js";
 

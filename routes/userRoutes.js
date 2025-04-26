@@ -10,7 +10,7 @@ import { userLogin, userLogout, userProfile,updateUserProfile, userSignup,
        
 import { userAuth } from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/multer.js";
-import { checkSeller } from "../controllers/sellerControllers.js";
+import { checkUser } from "../controllers/userControllers.js";
 
 const router = e.Router();
 

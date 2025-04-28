@@ -34,6 +34,9 @@ const userSchema = new Schema(
         type:String,
         //  required: true,
        },
+       noofproducts:{
+        type:String,
+       },
        image :  {
                 type: String,
                

@@ -191,7 +191,16 @@ export const getAllCategory = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });  
     }  
 };  
-
+// Get all Users
+export const getAllUser = async (req, res) => {  
+    try {  
+        const user = await User.find();  
+        return res.json({ data: user, message: "User fetched successfully" });  
+    } catch (error) {  
+        console.error("Error fetching users:", error);  
+        return res.status(500).json({ message: "Internal server error" });  
+    }  
+};  
 export const userProfile = async (req, res, next) => {
  
         try {
@@ -339,7 +348,7 @@ export const clearCart = async (req, res) => {
 export const updateUserProfile = async (req, res, next) => {
     try {
         const userId = req.user.id; // Get user ID from the authenticated request
-        const { name, phone, email, dob, shippingaddress, image } = req.body;
+        const { name, phone, email, dob, shippingaddress,noofproducts, image } = req.body;
 
         // Step 1: Find the user
         const userData = await User.findById(userId);
@@ -355,6 +364,7 @@ export const updateUserProfile = async (req, res, next) => {
             phone: phone || userData.phone,
             dob: dob || userData.dob,
             shippingaddress: shippingaddress || userData.shippingaddress,
+            noofproducts:noofproducts || userData.noofproducts,
             image: (typeof image === 'string' && image) ? image : userData.image, // Ensure image is a string
         };
 

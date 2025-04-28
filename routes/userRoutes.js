@@ -2,7 +2,7 @@ import e from "express";
 import { userLogin, userLogout, userProfile,updateUserProfile, userSignup,
     userforgotPassword,userchangePassword,userAccountDeActivate,checkUser,
     userAccountActivate,deleteUser,viewProducts ,addToCart , viewCart,checkOut,orderHistory,viewOrders ,clearCart
-    ,getAllCategory
+    ,getAllCategory,getAllUser
    } from "../controllers/userControllers.js";
 
  
@@ -28,7 +28,7 @@ router.put("/updateprofile",userAuth,upload.single('image'), updateUserProfile);
 //router.post("/updateprofile/:_id", userAuth, updateUserProfile);
 
 
-router.get('/get-all-user', );
+router.get('/get-all-user',userAuth,getAllUser );
  
 router.get("/get-all-category",userAuth, getAllCategory);
 
@@ -51,7 +51,7 @@ router.put("/change-password", userAuth, userchangePassword);
  router.get("/check-user", userAuth,checkUser);
  
    //delete-user
-   router.delete("/delete/:userId", deleteUser);
+   router.delete("/delete/:userId",userAuth, deleteUser);
 
    // view Product
    router.get("/product",userAuth, viewProducts);

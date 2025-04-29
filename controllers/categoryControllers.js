@@ -43,6 +43,22 @@ export const createCategory = async (req, res, next) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+//delete category
+export const deleteCategory = async (req, res) => {
+    try {
+        const { categoryId } = req.params
+
+        if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+            return res.status(400).json({ error: "Invalid category id" })
+        }
+
+        await Category.findByIdAndDelete(categoryId)
+        return res.status(200).json("Category deleted successfully")
+    } catch (error) {
+        console.log(error);
+        res.status(error.status || 500).json({ error: error.message || "Internal server error" })
+    }
+}
 
 
 // Get all Categories

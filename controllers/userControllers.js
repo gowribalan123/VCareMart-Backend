@@ -88,17 +88,17 @@ export const userSignup = async (req, res, next) => {
 }
 export const userLogin = async (req, res, next) => {
     try {
-       // const role="user";
-      //  const {role}=req.query;
-        const { email, password } = req.body;
+      // const role="user";
+      //const {role}=req.query;
+        const { email, password ,role} = req.body;
 
         if (!email || !password) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
+      // const userExist = await User.findOne({email });
        const userExist = await User.findOne({email });
-       //const userExist = await User.findOne({email ,role});
-                      //  console.log(userExist.email)   ;                                           
+                     console.log(userExist.email)   ;                                           
  
        if (!userExist) {
           return res.status(404).json({ message: "User does not exist" });
@@ -138,13 +138,14 @@ export const userLogin = async (req, res, next) => {
 // Seller Login
 export const sellerLogin = async (req, res) => {
     try {
+        const role="seller";
         const { email, password } = req.body;
  
         if (!email || !password) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        const sellerExist = await Seller.findOne({ email });
+        const sellerExist = await Seller.findOne({ email ,role});
         if (!sellerExist) {
             return res.status(404).json({ message: "Seller does not exist" });
         }

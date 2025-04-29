@@ -79,6 +79,24 @@ export const getAllSubCategory = async (req, res) => {
         res.status(error.status || 500).json({ error: error.message || "Internal server error" });
     }
 };
+
+//delete subcategory
+export const deleteSubCategory = async (req, res) => {
+    try {
+        const { subcategoryId } = req.params
+
+        if (!mongoose.Types.ObjectId.isValid(subcategoryId)) {
+            return res.status(400).json({ error: "Invalid sub category id" })
+        }
+
+        await SubCategory.findByIdAndDelete(subcategoryId)
+        return res.status(200).json("SubCategory deleted successfully")
+    } catch (error) {
+        console.log(error);
+        res.status(error.status || 500).json({ error: error.message || "Internal server error" })
+    }
+}
+
 export const getSubCategoryByCategory = async (req, res) => {  
     try {
         const { categoryId } = req.body; // Extract categoryId from request body

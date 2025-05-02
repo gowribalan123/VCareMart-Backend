@@ -2,6 +2,7 @@ import { Cart } from "../models/cartModel.js";
 import { Product } from "../models/productModel.js";
 import { Category } from "../models/categoryModel.js";  
 import { SubCategory } from "../models/subcategoryModel.js";  
+import { User } from "../models/userModel.js";
 
 export const getCart = async (req, res) => {
     try {
@@ -87,29 +88,51 @@ export const removeProductFromCart = async (req, res) => {
 
 
 export const updateQuantity = async (req, res) => {
+    const userId = req.user.id;
+  //  const cart = await Cart.findOne({ userId })
     const { productId, quantity } = req.body;
-
+console.log(quantity);
+ 
     try {
-        const cart = await Cart.findOne({ 'products.productId': productId });
-        if (!cart) {
-            return res.status(404).json({ message: 'Cart not found' });
-        }
+        const cart = await Cart.findOne({userId});
+        console.log(cart);
+        
+        
 
         const itemIndex = cart.products.findIndex(item => item.productId.toString() === productId);
         
+    
+        console.log(itemIndex);
         if (itemIndex >= 0) {
             cart.products[itemIndex].quantity = quantity; // Update quantity
             cart.calculateTotalPrice(); // Recalculate total price
             await cart.save();
-            return res.status(200).json({ message: 'Quantity updated successfully', cart });
+            return res.status(200).json({ 
+                message: 'Quantity updated successfully', 
+                cart,
+                totalPrice: cart.totalPrice // Include updated total price
+            });
         } else {
-            return res.status(404).json({ message: 'Item not found in cart' });
+            return res.status(404).json({ 
+                code: 'ITEM_NOT_FOUND',
+                error: 'Item not found',
+                message: 'The specified item is not in the cart.',
+                status: 'error'
+            });
         }
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: 'Server error', error });
+        return res.status(500).json({ 
+            code: 'SERVER_ERROR',
+            error: 'Server error',
+            message: 'An unexpected error occurred on the server.',
+            status: 'error' 
+        });
     }
 };
+
+
+
 export const clearCart = async (req, res) => {
     try {
         const userId = req.user.id;

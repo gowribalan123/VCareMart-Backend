@@ -30,7 +30,7 @@ export const createCategory = async (req, res, next) => {
 
         // Create a new category
         const newCategory = new Category({
-            name,
+            name: name.toLowerCase(),  // Convert name to lowercase
             description,
             image: uploadResult.url,
             seller: userId

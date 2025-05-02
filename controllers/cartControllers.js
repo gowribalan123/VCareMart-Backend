@@ -86,51 +86,37 @@ export const removeProductFromCart = async (req, res) => {
     }
 };
 
-
 export const updateQuantity = async (req, res) => {
-    const userId = req.user.id;
-  //  const cart = await Cart.findOne({ userId })
     const { productId, quantity } = req.body;
-console.log(quantity);
- 
-    try {
-        const cart = await Cart.findOne({userId});
-        console.log(cart);
-        
-        
+    const userId = req.user.id;
+    console.log("Incoming Product ID:", productId); // Log incoming product ID
 
-        const itemIndex = cart.products.findIndex(item => item.productId.toString() === productId);
+    try {
+        let cart = await Cart.findOne({ userId });
         
-    
-        console.log(itemIndex);
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found for this user' });
+        }
+
+        const itemIndex = cart.products.findIndex(item => {
+            console.log("Comparing:", item.productId.toString(), "with", productId._id.toString());
+            return item.productId.toString() === productId._id.toString();
+        });
+        
+        console.log("Item Index:", itemIndex); // Log the item index
         if (itemIndex >= 0) {
             cart.products[itemIndex].quantity = quantity; // Update quantity
             cart.calculateTotalPrice(); // Recalculate total price
             await cart.save();
-            return res.status(200).json({ 
-                message: 'Quantity updated successfully', 
-                cart,
-                totalPrice: cart.totalPrice // Include updated total price
-            });
+            return res.status(200).json({ message: 'Quantity updated successfully', cart });
         } else {
-            return res.status(404).json({ 
-                code: 'ITEM_NOT_FOUND',
-                error: 'Item not found',
-                message: 'The specified item is not in the cart.',
-                status: 'error'
-            });
+            return res.status(404).json({ message: 'Item not found in cart' });
         }
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ 
-            code: 'SERVER_ERROR',
-            error: 'Server error',
-            message: 'An unexpected error occurred on the server.',
-            status: 'error' 
-        });
+        console.error("Error updating quantity:", error);
+        return res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
-
 
 
 export const clearCart = async (req, res) => {

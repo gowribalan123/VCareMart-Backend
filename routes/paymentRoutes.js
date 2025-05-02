@@ -15,15 +15,17 @@ router.post("/create-checkout-session", userAuth, async (req, res, next) => {
 
         const lineItems = products.map((product) => ({
             price_data: {
-                currency: "inr",
+                currency: 'inr',
                 product_data: {
                     name: product?.productId?.name,
                     images: [product?.productId?.image],
+                  quantity: product?.productId?.quantity,
                 },
-                unit_amount: Math.round(product?.productId?.price * 100),
+                unit_amount: Math.round(product?.productId?.price * 100), // Convert price to cents
             },
-            quantity: 1,
+           quantity: product.quantity, // Use the quantity from the product
         }));
+
 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],

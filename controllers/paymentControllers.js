@@ -42,7 +42,6 @@ export const getPaymentsByUser = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
-
 // Create a checkout session
 export const createCheckoutSession = async (req, res) => {
     try {
@@ -54,10 +53,11 @@ export const createCheckoutSession = async (req, res) => {
                 product_data: {
                     name: product?.productId?.name,
                     images: [product?.productId?.image],
+                   //quantity: product?.productId?.quantity,
                 },
                 unit_amount: Math.round(product?.productId?.price * 100), // Convert price to cents
             },
-            quantity: 1, // Set quantity to 1 for each product
+            quantity: product?.productId?.quantity, // Use the quantity from the product
         }));
 
         const session = await stripe.checkout.sessions.create({

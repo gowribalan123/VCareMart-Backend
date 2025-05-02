@@ -16,7 +16,7 @@ router.get("/get-all-products", getAllProducts);
 
 router.post("/create-product", userAuth, upload.single('image'), createProduct);
 router.put("/update-product/:productId",userAuth,upload.single('image'),updateProduct);
-router.delete("/delete-product/:productId",deleteProduct);
+router.delete("/delete-product/:productId",userAuth,deleteProduct);
 
 
 export { router as productRouter };

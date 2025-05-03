@@ -33,7 +33,7 @@ export const createSubCategory = async (req, res, next) => {
 
         // Use the categoryId directly from the request
         const newSubCategory = new SubCategory({  
-            name,  
+            name:name.toLowerCase(),  // Convert name to lowercase,  
             description,
             categoryId: categoryId, // Use the provided categoryId
             image: uploadResult.url,  

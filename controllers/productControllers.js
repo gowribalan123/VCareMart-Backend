@@ -4,29 +4,27 @@ import { Product } from "../models/productModel.js";
 import { User } from "../models/userModel.js";  // Ensure User model is imported
 import { Category } from "../models/categoryModel.js";  
 import { SubCategory } from "../models/subcategoryModel.js";  
-
 // Create a new product  
 export const createProduct = async (req, res, next) => {  
     try {  
-       
-
         // Destructure fields from the request body  
-        const { name, description, categoryid,  subcategoryid, age_group, size, color, price, stock, weight, rating, userID } = req.body;  
+        const { name, description, categoryid, subcategoryid, age_group, size, color, price, stock, weight, rating, userID } = req.body;  
 
-       // Validate subcategoryId
-             if (!mongoose.Types.ObjectId.isValid(subcategoryid)) {
-                 return res.status(400).json({ message: "Invalid subcategory ID" });
-             }
-           const userData = await User.findById(userID);
-             const subcategoryData= await SubCategory.findById(subcategoryid);
-             const categoryData=await Category.findById(categoryid);
-             
-             if (!userID || !userData) {  
-                 return res.status(401).json({ message: 'User not authenticated or not found' });  
-             }  
+        // Validate subcategoryId
+        if (!mongoose.Types.ObjectId.isValid(subcategoryid)) {
+            return res.status(400).json({ message: "Invalid subcategory ID" });
+        }
+
+        const userData = await User.findById(userID);
+        if (!userID || !userData) {  
+            return res.status(401).json({ message: 'User not authenticated or not found' });  
+        }
+
+        const subcategoryData = await SubCategory.findById(subcategoryid);
+        const categoryData = await Category.findById(categoryid);
 
         // Check if the required fields are present  
-        if (!name || !description || !subcategoryid || !categoryid ||   !age_group || !size || !color || !price || !stock || !weight || !rating) {  
+        if (!name || !description || !subcategoryid || !categoryid || !age_group || !size || !color || !price || !stock || !weight || !rating) {  
             return res.status(400).json({ message: "All fields are required" });  
         }  
 
@@ -42,8 +40,8 @@ export const createProduct = async (req, res, next) => {
         const newProduct = new Product({  
             name,  
             description,  
-           categoryid:categoryData._id,  
-            subcategoryid:subcategoryData._id,  
+            categoryid: categoryid,  
+            subcategoryid: subcategoryid,  
             age_group,  
             size,  
             color,  
@@ -52,18 +50,19 @@ export const createProduct = async (req, res, next) => {
             weight,  
             rating,  
             image: uploadResult.url,  
-            
             seller: userData._id 
         });  
 
         const savedProduct = await newProduct.save();  
-        return res.status(201).json({ data: savedProduct, message: "Product created successfully" });  
+        return res.status(201).json({ success: true, data: savedProduct, message: "Product created successfully" });  
+      
     } catch (error) {  
         console.error("Error creating product:", error);  
         return res.status(500).json({ message: "Internal server error" });  
     }  
 };
 
+ 
 // Get all products  
 export const getAllProducts = async (req, res) => {  
     try {  

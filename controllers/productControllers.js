@@ -193,6 +193,34 @@ export const getProductBySubCategory = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+// Get products by subcategory name 
+export const getProductBySubCategoryName = async (req, res) => {
+    try {
+        const subcategoryNames = ["kurti", "pants", "shirts", "sarees", "frocks", "t-shirt"]; // List of valid subcategory names
+
+        // Step 1: Find all subcategories
+        const subcategories = await SubCategory.find({ name: { $in: subcategoryNames } });
+
+        if (!subcategories.length) {
+            return res.status(404).json({ message: "No subcategories found" });
+        }
+
+        const subcategoryIds = subcategories.map(subcategory => subcategory._id); // Store the subcategory IDs
+console.log(subcategoryIds);
+        // Step 2: Fetch products by subcategory IDs
+        const products = await Product.find({ subcategoryid: { $in: subcategoryIds } }) // Use $in to match against multiple IDs
+           // .populate("subcategoryid"); // Populate subcategory details if needed
+
+        if (!products.length) {
+            return res.status(404).json({ message: "No products found for these subcategories" });
+        }
+
+        return res.status(200).json({ message: "Products fetched successfully", data: products });
+    } catch (error) {
+        console.error("Error fetching products by subcategory names:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
 
 
 // Get products by category ID

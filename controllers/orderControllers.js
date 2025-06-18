@@ -26,9 +26,9 @@ export const createOrder = [validateOrderData, async (req, res) => {
             return res.status(400).json({ message: "User ID is required." });
         }
 
-        if (!shippingAddress || shippingAddress.trim() === "") {
-            return res.status(400).json({ message: "Shipping address is required." });
-        }
+        //if (!shippingAddress || shippingAddress.trim() === "") {
+          //  return res.status(400).json({ message: "Shipping address is required." });
+        //}
 
         const cart = await Cart.findOne({ userId });
 

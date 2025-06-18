@@ -52,10 +52,19 @@ const userSchema = new Schema(
             type: Boolean,
             default: true,
         },
+         // other fields...
+         wishlist: {
+            type: [String],
+            default: []
+        }
     },
     {
         timestamps: true,
-    }
+    },
+     
+       
+    
+    
 );
 
 export const User = mongoose.model("User", userSchema);

@@ -9,11 +9,7 @@ const orderSchema = new mongoose.Schema({
         index: true, // Add index for faster lookups
     },
     
-    shippingaddress:{
-        type:String,
-         required: false,
-       },
-
+    
       totalPrice: { type: Number, required: false },
 
       paymentStatus: {

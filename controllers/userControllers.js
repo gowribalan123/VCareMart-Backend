@@ -274,8 +274,13 @@ export const userchangePassword = async (req, res, next) => {
 
 export const userAccountDeActivate = async (req, res, next) => {
     try {
-        const userId = req.user.id;
+          const { userId } = req.params
 
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "Invalid id" })
+        }
+       
+console.log("userid",userId);
         const userData = await User.findById(userId).select("-password");
         if (!userData) {
             return res.status(404).json({ message: "User not found" });
@@ -299,7 +304,11 @@ export const checkUser = async (req, res, next) => {
 
 export const userAccountActivate = async (req, res, next) => {
     try {
-        const userId = req.user.id;
+         const { userId } = req.params
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "Invalid id" })
+        }
 
         const userData = await User.findById(userId).select("-password");
 
@@ -310,7 +319,7 @@ export const userAccountActivate = async (req, res, next) => {
         userData.isActive = true;
         await userData.save();
 
-        return res.json({ message: "User account activated successfully" });
+        return res.json({data: userData, message: "User account activated successfully" });
     } catch (error) {
         return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });
     }

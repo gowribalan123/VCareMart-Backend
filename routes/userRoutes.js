@@ -42,10 +42,10 @@ router.post("/forgot-password", userforgotPassword);
 router.put("/change-password", userAuth, userchangePassword);
 
 //account-deactivate
- router.put("/account-deactivate", userAuth, userAccountDeActivate); 
+ router.put("/account-deactivate/:userId", userAuth, userAccountDeActivate); 
  
  //account-activate
- router.put("/account-activate", userAuth, userAccountActivate);
+ router.put("/account-activate/:userId", userAuth, userAccountActivate);
 
  //check-user
  router.get("/check-user", userAuth,checkUser);

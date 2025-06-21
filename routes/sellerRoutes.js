@@ -50,6 +50,7 @@ router.get("/check-seller",sellerAuth, checkSeller);
 router.post("/create-product",sellerAuth, upload.single('image'), createProduct);
 
 
+
 //update product
 router.put("/update-product/:productId",sellerAuth,upload.single('image'),updateProduct);
 

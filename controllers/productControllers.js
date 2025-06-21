@@ -193,6 +193,41 @@ export const getProductBySubCategory = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+ 
+
+
+ 
+
+// Get products by seller ID
+export const getAllProductsBySeller = async (req, res) => {
+    const seller  = req.params.seller;
+    console.log("Seller ID:", seller);
+
+    // Validate seller ID
+    if (!seller) {
+        return res.status(400).json({ success: false, message: "Seller ID is required" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(seller)) {
+        return res.status(400).json({ success: false, message: "Invalid seller ID format. Please provide a valid ObjectId." });
+    }
+
+    try {
+        const products = await Product.find({ seller });
+        console.log("Products found:", products);
+
+        if (!products.length) {
+            return res.status(404).json({ success: false, message: "No products found for this seller ID " });
+        }
+
+        return res.status(200).json({ success: true, message: "Products fetched successfully", data: products });
+    } catch (error) {
+        console.error("Error fetching products by seller ID:", error);
+        return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+};
+
+
 // Get products by subcategory name 
 export const getProductBySubCategoryName = async (req, res) => {
     try {

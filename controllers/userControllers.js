@@ -207,6 +207,7 @@ export const userProfile = async (req, res, next) => {
         try {
             const userId = req.user.id;
             const user = await User.findById(userId).select("-password")
+            //  console.log(user._id)
             return res.status(200).json(user)
         } catch (error) {
             console.log(error);

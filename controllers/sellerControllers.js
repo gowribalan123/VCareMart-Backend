@@ -115,6 +115,7 @@ export const sellerProfile = async (req, res,next) => {
             const { email } = req.body;
          // console.log(seller);
                   const sellerData = await Seller.findOne({ email }).select("-password");
+                //  console.log(sellerData)
                   return res.json({ data: sellerData , message: "Seller profile fetched" });
               } catch (error) {
                   return res.status(error.statusCode || 500).json({ message: error.message || "Internal server error" });

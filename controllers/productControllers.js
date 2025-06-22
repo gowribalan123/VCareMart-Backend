@@ -213,11 +213,11 @@ export const getAllProductsBySeller = async (req, res) => {
     }
 
     try {
-        const products = await Product.find({ seller });
+        const products = await Product.find({ seller:seller }).populate('seller');
         console.log("Products found:", products);
 
         if (!products.length) {
-            return res.status(404).json({ success: false, message: "No products found for this seller ID " });
+            return res.status(404).json({ success: false, message: "No products found for this seller " });
         }
 
         return res.status(200).json({ success: true, message: "Products fetched successfully", data: products });
